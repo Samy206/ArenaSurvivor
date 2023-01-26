@@ -1,11 +1,13 @@
-package com.ut3.arenasurvivor;
+package com.ut3.arenasurvivor.activites;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
-public class MainActivity extends AppCompatActivity {
- 
+import com.ut3.arenasurvivor.R;
+
+public class MenuActivity extends AppCompatActivity {
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
