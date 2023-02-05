@@ -37,7 +37,11 @@ public class Projectile implements Collidable, Movable {
 
     @Override
     public void move(int movementX, int movementY) {
-        hitBox.offsetTo(movementX, movementY);
+        hitBox.offset(movementX, movementY);
+        if(hitBox.bottom > 500) {
+            hitBox.set(100, 100, 200, 200);
+        }
+
     }
 
     public void draw (Canvas canvas) {

@@ -1,16 +1,16 @@
-package com.ut3.arenasurvivor.activites;
-
-import androidx.appcompat.app.AppCompatActivity;
+package com.ut3.arenasurvivor.activities;
 
 import android.os.Bundle;
 
-import com.ut3.arenasurvivor.R;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.ut3.arenasurvivor.GameView;
 
 public class MenuActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(new GameView(this));
     }
 }
