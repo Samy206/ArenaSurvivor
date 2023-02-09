@@ -1,7 +1,10 @@
 package com.ut3.arenasurvivor;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -18,24 +21,24 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     public GameView(Context context) {
         super(context);
         getHolder().addCallback(this);
-        thread = new GameThread(getHolder(), this);
-        player = new Player();
         setFocusable(true);
     }
 
     public void update() {
-
+        this.player.update();
     }
 
     @Override
     public void surfaceCreated(@NonNull SurfaceHolder holder) {
+        Bitmap playerBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.chibi1);
+        player = new Player(this, playerBitmap, 0,0);
+        thread = new GameThread(getHolder(), this);
         thread.setRunning(true);
         thread.start();
     }
 
     @Override
     public void surfaceChanged(@NonNull SurfaceHolder holder, int format, int width, int height) {
-
     }
 
     @Override

@@ -29,6 +29,7 @@ public class GameThread extends Thread {
 
     @Override
     public void run() {
+        long startTime = System.nanoTime();
         while (running) {
             try {
                 canvas = this.surfaceHolder.lockCanvas();
@@ -47,6 +48,19 @@ public class GameThread extends Thread {
                     }
                 }
             }
+            long now = System.nanoTime() ;
+            // Interval to redraw game
+            // (Change nanoseconds to milliseconds)
+            long waitTime = (now - startTime)/1000000;
+            if(waitTime < 10)  {
+                waitTime= 10; // Millisecond.
+            }
+            try{
+                this.sleep(waitTime);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            startTime = System.nanoTime();
         }
     }
 }
