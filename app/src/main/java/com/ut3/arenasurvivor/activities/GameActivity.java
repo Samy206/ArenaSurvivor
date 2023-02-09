@@ -1,4 +1,4 @@
-package com.ut3.arenasurvivor.activites;
+package com.ut3.arenasurvivor.activities;
 
 import android.os.Bundle;
 

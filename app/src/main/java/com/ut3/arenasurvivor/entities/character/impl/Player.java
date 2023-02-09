@@ -6,9 +6,21 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 
+import com.ut3.arenasurvivor.entities.Collidable;
+import com.ut3.arenasurvivor.entities.Movable;
 import com.ut3.arenasurvivor.entities.character.Character;
 
 public class Player implements Character {
+
+    @Override
+    public boolean detectCollision(Rect dangerHitBox) {
+        return false;
+    }
+
+    @Override
+    public void move(int movementX, int movementY) {
+
+    }
     private Bitmap sprite;
 
     public Player() {
@@ -20,6 +32,5 @@ public class Player implements Character {
         paint.setColor(Color.BLUE);
         canvas.drawCircle(100, 100, 100, paint);
     }
-
 
 }
