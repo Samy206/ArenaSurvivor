@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -23,6 +24,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     public GameView(Context context) {
         super(context);
+        Drawable background = getResources().getDrawable(R.mipmap.ic_launcher_background);
+        setBackground(background);
         getHolder().addCallback(this);
         thread = new GameThread(getHolder(), this);
         projectile = new Projectile("ProjectileA",
