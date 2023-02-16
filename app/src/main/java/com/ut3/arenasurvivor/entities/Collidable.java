@@ -1,11 +1,10 @@
 package com.ut3.arenasurvivor.entities;
 import android.graphics.Rect;
 
+import java.util.logging.Logger;
+
 public interface Collidable {
 
-    Rect hitbox = null;
-
-
-
+    public boolean detectCollision(Rect dangerHitBox);
 
 }

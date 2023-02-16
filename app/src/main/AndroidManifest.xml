@@ -19,7 +19,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".activites.MenuActivity"
+            android:name="com.ut3.arenasurvivor.activities.MenuActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
