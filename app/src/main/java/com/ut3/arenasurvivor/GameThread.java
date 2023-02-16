@@ -1,36 +1,16 @@
 package com.ut3.arenasurvivor;
 
 import android.graphics.Canvas;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.SurfaceHolder;
 
 import java.util.logging.Logger;
 
 public class GameThread extends Thread {
-    final SurfaceHolder surfaceHolder;
+    SurfaceHolder surfaceHolder;
     GameView gameView;
     Boolean running;
     Logger LOGGER;
-
-    private Handler actionHandler;
     public static Canvas canvas;
-
-    private Runnable update = new Runnable() {
-        @Override
-        public void run() {
-            gameView.update();
-            actionHandler.post(draw);
-        }
-    };
-
-    private Runnable draw = new Runnable() {
-        @Override
-        public void run() {
-            gameView.draw(canvas);
-            actionHandler.postDelayed(update,500);
-        }
-    };
 
     public GameThread(SurfaceHolder surfaceHolder, GameView gameView) {
         super();
@@ -49,13 +29,13 @@ public class GameThread extends Thread {
 
     @Override
     public void run() {
-        actionHandler = new Handler(Looper.getMainLooper());
-        while(running) {
+        long startTime = System.nanoTime();
+        while (running) {
             try {
                 canvas = this.surfaceHolder.lockCanvas();
                 synchronized (surfaceHolder) {
-                    gameView.draw(canvas);
-                    actionHandler.postDelayed(update, 5000);
+                    this.gameView.update();
+                    this.gameView.draw(canvas);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -63,14 +43,24 @@ public class GameThread extends Thread {
                 if (canvas != null) {
                     try {
                         surfaceHolder.unlockCanvasAndPost(canvas);
-
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
             }
+            long now = System.nanoTime() ;
+            // Interval to redraw game
+            // (Change nanoseconds to milliseconds)
+            long waitTime = (now - startTime)/1000000;
+            if(waitTime < 10)  {
+                waitTime= 10; // Millisecond.
+            }
+            try{
+                this.sleep(waitTime);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            startTime = System.nanoTime();
         }
-
-
     }
 }
