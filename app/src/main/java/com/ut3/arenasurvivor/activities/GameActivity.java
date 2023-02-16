@@ -1,21 +1,25 @@
 package com.ut3.arenasurvivor.activities;
 
-import android.content.pm.ActivityInfo;
 import android.os.Bundle;
-import android.widget.TextView;
+import android.view.Window;
+import android.view.WindowManager;
+
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.ut3.arenasurvivor.GameView;
 
 public class GameActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        TextView textView = new TextView(this);
-        textView.setText("Lancer une partie");
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-        setContentView(textView);
 
+        //Set fullScreen
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        //No Title
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        setContentView(new GameView(this));
 
     }
 }
