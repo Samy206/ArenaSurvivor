@@ -2,6 +2,7 @@ package com.ut3.arenasurvivor.entities.character.impl;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Rect;
 
 import com.ut3.arenasurvivor.GameView;
 import com.ut3.arenasurvivor.entities.character.Character;
@@ -142,4 +143,8 @@ public class Player extends Character {
     }
 
 
+    @Override
+    public boolean detectCollision(Rect dangerHitBox) {
+        return false;
+    }
 }

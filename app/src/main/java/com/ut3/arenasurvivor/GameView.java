@@ -1,6 +1,8 @@
 package com.ut3.arenasurvivor;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.view.SurfaceHolder;
@@ -23,9 +25,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         super(context);
         getHolder().addCallback(this);
         thread = new GameThread(getHolder(), this);
-        player = new Player();
         projectile = new Projectile("ProjectileA",
-                new Rect(100,100,200,200));
+                new Rect(100, 100, 200, 200));
         setFocusable(true);
     }
 
