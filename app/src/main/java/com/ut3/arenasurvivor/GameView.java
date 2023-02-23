@@ -1,6 +1,7 @@
 package com.ut3.arenasurvivor;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -13,29 +14,38 @@ import android.view.SurfaceView;
 
 import androidx.annotation.NonNull;
 
+import com.ut3.arenasurvivor.activities.MainMenuActivity;
 import com.ut3.arenasurvivor.entities.character.impl.Player;
 import com.ut3.arenasurvivor.entities.impl.Projectile;
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     private GameThread thread;
-
+    private Long startTime;
+    private SharedPreferences sharedPreferences;
     private Player player;
     private Projectile projectile;
 
 
-    public GameView(Context context) {
+    public GameView(Context context, SharedPreferences sharedPreferences) {
         super(context);
+        this.startTime = System.nanoTime();
+        this.sharedPreferences = sharedPreferences;
         Drawable background = getResources().getDrawable(R.mipmap.ic_launcher_background);
         //setBackground(background);
         getHolder().addCallback(this);
-        thread = new GameThread(getHolder(), this);
+        thread = new GameThread(getHolder(), this, sharedPreferences);
         projectile = new Projectile("ProjectileA",
                 new Rect(100, 100, 200, 200));
         setFocusable(true);
     }
 
-    public void update() {
+    public void update(long timePlayed) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        long score = (long) ((System.nanoTime() - this.startTime) / (2*Math.pow(10,9)));
+        editor.putLong(MainMenuActivity.SHARED_PREF, score);
+        editor.apply();
+        editor.commit();
         projectile.move(5, 10);
         this.player.update();
     }
@@ -44,7 +54,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     public void surfaceCreated(@NonNull SurfaceHolder holder) {
         Bitmap playerBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.chibi1);
         player = new Player(this, playerBitmap, 0, 0);
-        thread = new GameThread(getHolder(), this);
+        thread = new GameThread(getHolder(), this, sharedPreferences);
         thread.setRunning(true);
         thread.start();
     }

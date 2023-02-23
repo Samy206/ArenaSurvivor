@@ -1,21 +1,28 @@
 package com.ut3.arenasurvivor;
 
+import android.app.Application;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.preference.PreferenceManager;
 import android.view.SurfaceHolder;
 
 import java.util.logging.Logger;
 
 public class GameThread extends Thread {
-    SurfaceHolder surfaceHolder;
+
+    SharedPreferences sharedPreferences;
+    final SurfaceHolder surfaceHolder;
     GameView gameView;
     Boolean running;
     Logger LOGGER;
     public static Canvas canvas;
 
-    public GameThread(SurfaceHolder surfaceHolder, GameView gameView) {
+    public GameThread(SurfaceHolder surfaceHolder, GameView gameView, SharedPreferences sharedPreferences) {
         super();
+        this.sharedPreferences = sharedPreferences;
         this.surfaceHolder = surfaceHolder;
         this.gameView = gameView;
         LOGGER = Logger.getLogger("GameThread");
@@ -32,13 +39,16 @@ public class GameThread extends Thread {
     @Override
     public void run() {
         long startTime = System.nanoTime();
+        long timePlayed;
         while (running) {
             try {
                 canvas = this.surfaceHolder.lockCanvas();
                 synchronized (surfaceHolder) {
-                    this.gameView.update();
+                    timePlayed = System.nanoTime() - startTime;
+                    this.gameView.update(timePlayed);
                     this.gameView.draw(canvas);
                 }
+
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
