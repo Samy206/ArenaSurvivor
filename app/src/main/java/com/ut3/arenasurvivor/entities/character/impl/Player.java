@@ -27,7 +27,7 @@ public class Player extends Character {
     private Bitmap[] topToBottoms;
     private Bitmap[] bottomToTops;
 
-    public static final float VELOCITY = 0.1f;
+    public static final float VELOCITY = 1f;
 
     public int movingVectorX = 10;
     public int movingVectorY = 5;
@@ -78,25 +78,11 @@ public class Player extends Character {
 
 
 
-        //Current time in nanoseconds
-        long now = System.nanoTime();
 
-        //Never once did draw
-        if (lastDrawNanoTime == -1) {
-            lastDrawNanoTime = now;
-        }
 
-        //Change nanoseconds to milliseconds (1 nanosecond = 1000000 milliseconds)
-        int deltaTime = (int) ((now - lastDrawNanoTime) / 1000000);
 
-        //Distance moves
-        float distance = VELOCITY * deltaTime;
 
-        double movingVectorLength = Math.sqrt(movingVectorX ^ 2 + movingVectorY ^ 2);
 
-        //Calculate the new position of the game character
-        this.x = x + (int) (distance * movingVectorX / movingVectorLength);
-        this.y = y + (int) (distance * movingVectorY / movingVectorLength);
 
         //When the game's character touches the edge of the screen, then change direction
         if (this.x < 0) {
@@ -144,6 +130,28 @@ public class Player extends Character {
         canvas.drawBitmap(bitmap, x, y, null);
         //Last draw Time
         this.lastDrawNanoTime = System.nanoTime();
+    }
+
+    public void move(int direction){
+        //Current time in nanoseconds
+        long now = System.nanoTime();
+
+        //Never once did draw
+        if (lastDrawNanoTime == -1) {
+            lastDrawNanoTime = now;
+        }
+
+        //Change nanoseconds to milliseconds (1 nanosecond = 1000000 milliseconds)
+        int deltaTime = (int) ((now - lastDrawNanoTime) / 1000000);
+
+        //Distance moves
+        float distance = VELOCITY * deltaTime;
+
+        double movingVectorLength = Math.sqrt(movingVectorX ^ 2 + movingVectorY ^ 2);
+
+        //Calculate the new position of the game character
+        this.x = x + (int) ((distance * movingVectorX / movingVectorLength) * direction);
+        //this.y = y + (int) (distance * movingVectorY / movingVectorLength);
     }
 
     public void setMovingVector(int movingVectorX, int movingVectorY) {

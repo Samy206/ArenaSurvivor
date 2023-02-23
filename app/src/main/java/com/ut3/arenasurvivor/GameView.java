@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -80,5 +81,32 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
 
         }
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent e){
+        float x = e.getX();
+        float y = e.getY();
+
+
+
+        switch (e.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+            case MotionEvent.ACTION_MOVE:
+                // Write your code to perform an action on contineus touch move
+                // Write your code to perform an action on down
+                if(x <= this.getWidth()/2){
+                    this.player.move(-1);
+                }else{
+                    this.player.move(1);
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+                // Write your code to perform an action on touch up
+                break;
+        }
+
+
+        return true;
     }
 }
