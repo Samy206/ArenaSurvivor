@@ -3,6 +3,8 @@ package com.ut3.arenasurvivor;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.preference.PreferenceManager;
 import android.view.SurfaceHolder;

@@ -14,6 +14,9 @@ public class Player extends Character {
     private static final int ROW_LEFT_TO_RIGHT = 2;
     private static final int ROW_BOTTOM_TO_TOP = 3;
 
+    // The thickness of the gound object so the player wont drown
+    private final int groundThickness = 100;
+
     //Row index of image are being used
     private int rowUsing = ROW_LEFT_TO_RIGHT;
 
@@ -73,6 +76,8 @@ public class Player extends Character {
     public void update() {
         this.colUsing = (this.colUsing + 1) % this.colCount;
 
+
+
         //Current time in nanoseconds
         long now = System.nanoTime();
 
@@ -108,6 +113,10 @@ public class Player extends Character {
         } else if (this.y > this.gameView.getHeight() - height) {
             this.y = this.gameView.getHeight() - height;
             this.movingVectorY = -this.movingVectorY;
+        }
+
+        if(this.y > gameView.getHeight()-100){
+            this.y = gameView.getHeight()-groundThickness;
         }
 
         //rowUsing

@@ -5,7 +5,10 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -28,6 +31,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         super(context);
         this.startTime = System.nanoTime();
         this.sharedPreferences = sharedPreferences;
+        Drawable background = getResources().getDrawable(R.mipmap.ic_launcher_background);
+        //setBackground(background);
         getHolder().addCallback(this);
         thread = new GameThread(getHolder(), this, sharedPreferences);
         projectile = new Projectile("ProjectileA",
@@ -77,8 +82,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     public void draw(Canvas canvas) {
         super.draw(canvas);
         if (canvas != null) {
+            Paint paint = new Paint();
+            paint.setColor(Color.YELLOW);
+            canvas.drawRect(0, canvas.getHeight()-100, canvas.getWidth(), canvas.getHeight(), paint);
             player.draw(canvas);
             projectile.draw(canvas);
+
+
         }
     }
 }
