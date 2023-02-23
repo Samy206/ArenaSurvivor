@@ -5,44 +5,56 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import androidx.annotation.NonNull;
 
+import com.ut3.arenasurvivor.entities.character.impl.Enemy;
 import com.ut3.arenasurvivor.entities.character.impl.Player;
 import com.ut3.arenasurvivor.entities.impl.Projectile;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     private GameThread thread;
 
     private Player player;
-    private Projectile projectile;
+    private List<Enemy> enemies;
+    private List<Projectile> projectiles;
 
 
     public GameView(Context context) {
         super(context);
-        Drawable background = getResources().getDrawable(R.mipmap.ic_launcher_background);
-        setBackground(background);
         getHolder().addCallback(this);
+        //Variables init
+        enemies = new ArrayList<>();
+        projectiles = new ArrayList<>();
         thread = new GameThread(getHolder(), this);
-        projectile = new Projectile("ProjectileA",
-                new Rect(100, 100, 200, 200));
         setFocusable(true);
     }
 
-    public void update() {
-        projectile.move(5, 10);
+    public synchronized void update() {
         this.player.update();
+        for (Enemy enemy : enemies) {
+            enemy.update();
+        }
+        for (Projectile projectile : projectiles) {
+            projectile.move(5, 10);
+        }
     }
 
     @Override
     public void surfaceCreated(@NonNull SurfaceHolder holder) {
+        //Entities init
         Bitmap playerBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.chibi1);
+        Bitmap enemyBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.output_onlinepngtools);
         player = new Player(this, playerBitmap, 0, 0);
-        thread = new GameThread(getHolder(), this);
+        enemies.add(new Enemy(this, enemyBitmap, 150, 150));
+        enemies.add(new Enemy(this, enemyBitmap, 300, 150));
+        //Thread Start
         thread.setRunning(true);
         thread.start();
     }
@@ -67,11 +79,26 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     @Override
-    public void draw(Canvas canvas) {
+    public synchronized void draw(Canvas canvas) {
         super.draw(canvas);
         if (canvas != null) {
             player.draw(canvas);
-            projectile.draw(canvas);
+            for (Enemy enemy : enemies) {
+                enemy.draw(canvas);
+            }
+            for (Projectile projectile : projectiles) {
+                projectile.draw(canvas);
+            }
         }
+    }
+
+    public void createProjectileAt(int x, int y) {
+        Projectile newProjectile = new Projectile("projectile" + projectiles.size(), new Rect(x, y, x + 10, y + 10));
+        projectiles.add(newProjectile);
+    }
+
+    public synchronized void destroyEnemy(Enemy enemy) {
+        //enemies.remove(enemy);
+        //enemies.removeIf(enemy::equals);
     }
 }

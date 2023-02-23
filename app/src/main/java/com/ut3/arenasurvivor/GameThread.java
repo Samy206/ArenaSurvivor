@@ -1,7 +1,5 @@
 package com.ut3.arenasurvivor;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.view.SurfaceHolder;
 
@@ -50,15 +48,13 @@ public class GameThread extends Thread {
                     }
                 }
             }
-            long now = System.nanoTime() ;
+            long now = System.nanoTime();
             // Interval to redraw game
             // (Change nanoseconds to milliseconds)
-            long waitTime = (now - startTime)/1000000;
-            if(waitTime < 10)  {
-                waitTime= 10; // Millisecond.
-            }
-            try{
-                this.sleep(waitTime);
+            long waitTime = (now - startTime) / 1000000;
+            try {
+                if (waitTime < 30)
+                    this.sleep(30 - waitTime);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
