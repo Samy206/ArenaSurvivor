@@ -15,14 +15,17 @@ import com.ut3.arenasurvivor.entities.character.impl.Player;
 import com.ut3.arenasurvivor.entities.impl.Projectile;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     private GameThread thread;
 
     private Player player;
-    private List<Enemy> enemies;
+    private Map<Enemy, Integer> enemies;
     private List<Projectile> projectiles;
 
 
@@ -30,15 +33,16 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         super(context);
         getHolder().addCallback(this);
         //Variables init
-        enemies = new ArrayList<>();
+        //enemies = Collections.synchronizedList(new ArrayList<>());
+        enemies = new ConcurrentHashMap<>();
         projectiles = new ArrayList<>();
         thread = new GameThread(getHolder(), this);
         setFocusable(true);
     }
 
-    public synchronized void update() {
+    public void update() {
         this.player.update();
-        for (Enemy enemy : enemies) {
+        for (Enemy enemy : enemies.keySet()) {
             enemy.update();
         }
         for (Projectile projectile : projectiles) {
@@ -52,8 +56,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         Bitmap playerBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.chibi1);
         Bitmap enemyBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.output_onlinepngtools);
         player = new Player(this, playerBitmap, 0, 0);
-        enemies.add(new Enemy(this, enemyBitmap, 150, 150));
-        enemies.add(new Enemy(this, enemyBitmap, 300, 150));
+        enemies.put(new Enemy(this, enemyBitmap, 150, 150), 0);
+        enemies.put(new Enemy(this, enemyBitmap, 300, 150), 0);
         //Thread Start
         thread.setRunning(true);
         thread.start();
@@ -83,7 +87,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         super.draw(canvas);
         if (canvas != null) {
             player.draw(canvas);
-            for (Enemy enemy : enemies) {
+            for (Enemy enemy : enemies.keySet()) {
                 enemy.draw(canvas);
             }
             for (Projectile projectile : projectiles) {
@@ -97,8 +101,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         projectiles.add(newProjectile);
     }
 
-    public synchronized void destroyEnemy(Enemy enemy) {
-        //enemies.remove(enemy);
+    public void destroyEnemy(Enemy enemy) {
+        enemies.remove(enemy);
         //enemies.removeIf(enemy::equals);
     }
 }
