@@ -28,6 +28,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private Map<Enemy, Integer> enemies;
     private List<Projectile> projectiles;
 
+    private EnemySpawner spawner;
 
     public GameView(Context context) {
         super(context);
@@ -37,6 +38,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         enemies = new ConcurrentHashMap<>();
         projectiles = new ArrayList<>();
         thread = new GameThread(getHolder(), this);
+        spawner = new EnemySpawner(this);
         setFocusable(true);
     }
 
@@ -48,6 +50,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         for (Projectile projectile : projectiles) {
             projectile.move(5, 10);
         }
+        spawner.update();
     }
 
     @Override
@@ -103,6 +106,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     public void destroyEnemy(Enemy enemy) {
         enemies.remove(enemy);
-        //enemies.removeIf(enemy::equals);
+    }
+
+    public void putEnemies(Enemy enemy){
+        enemies.put(enemy, enemies.size());
     }
 }
