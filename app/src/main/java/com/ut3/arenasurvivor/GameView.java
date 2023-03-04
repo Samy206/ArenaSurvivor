@@ -16,7 +16,11 @@ import androidx.annotation.NonNull;
 
 import com.ut3.arenasurvivor.activities.MainMenuActivity;
 import com.ut3.arenasurvivor.entities.character.impl.Player;
+import com.ut3.arenasurvivor.entities.impl.Platform;
 import com.ut3.arenasurvivor.entities.impl.Projectile;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
@@ -25,10 +29,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private SharedPreferences sharedPreferences;
     private Player player;
     private Projectile projectile;
-
+    private List<Platform> platformList;
 
     public GameView(Context context, SharedPreferences sharedPreferences) {
         super(context);
+        platformList = new ArrayList<Platform>();
         this.startTime = System.nanoTime();
         this.sharedPreferences = sharedPreferences;
         Drawable background = getResources().getDrawable(R.mipmap.ic_launcher_background);
@@ -37,6 +42,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         thread = new GameThread(getHolder(), this, sharedPreferences);
         projectile = new Projectile("ProjectileA",
                 new Rect(100, 100, 200, 200));
+        platformList.add(new Platform(new Rect(150, 300, 450, 320)));
+        platformList.add(new Platform(new Rect(450, 400, 600, 420)));
+        platformList.add(new Platform(new Rect(650, 300, 800, 320)));
         setFocusable(true);
     }
 
@@ -87,6 +95,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             canvas.drawRect(0, canvas.getHeight()-100, canvas.getWidth(), canvas.getHeight(), paint);
             player.draw(canvas);
             projectile.draw(canvas);
+
+            for (Platform platform : platformList) {
+                platform.draw(canvas);
+                if(platform.detectCollision(projectile.getHitBox())) {
+                    platformList.remove(platform);
+                }
+            }
 
 
         }
