@@ -1,5 +1,6 @@
 package com.ut3.arenasurvivor.activities;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Window;
@@ -18,7 +19,10 @@ public class GameActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         //Set fullScreen
         //this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setContentView(new GameView(this, sharedPreferences));
+        setContentView(new GameView(this, sharedPreferences, this));
+    }
 
+    public void endGame() {
+        startActivity(new Intent(this, MainMenuActivity.class));
     }
 }

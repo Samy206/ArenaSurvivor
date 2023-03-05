@@ -73,6 +73,10 @@ public class Player extends Character {
         return bitmaps[this.colUsing];
     }
 
+    public Rect getHitBox() {
+        return new Rect(x-30, y-30, x+30, y+30);
+    }
+
     public void update() {
         this.colUsing = (this.colUsing + 1) % this.colCount;
 
@@ -95,8 +99,8 @@ public class Player extends Character {
         double movingVectorLength = Math.sqrt(movingVectorX ^ 2 + movingVectorY ^ 2);
 
         //Calculate the new position of the game character
-        this.x = x + (int) (distance * movingVectorX / movingVectorLength);
-        this.y = y + (int) (distance * movingVectorY / movingVectorLength);
+        this.x = x + movingVectorX;
+        this.y = y + movingVectorY;
 
         //When the game's character touches the edge of the screen, then change direction
         if (this.x < 0) {

@@ -1,23 +1,19 @@
 package com.ut3.arenasurvivor;
 
-import android.app.Application;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.preference.PreferenceManager;
 import android.view.SurfaceHolder;
 
 import java.util.logging.Logger;
 
 public class GameThread extends Thread {
-
-    SharedPreferences sharedPreferences;
-    final SurfaceHolder surfaceHolder;
+    SurfaceHolder surfaceHolder;
     GameView gameView;
     Boolean running;
     Logger LOGGER;
+    SharedPreferences sharedPreferences;
     public static Canvas canvas;
 
     public GameThread(SurfaceHolder surfaceHolder, GameView gameView, SharedPreferences sharedPreferences) {
@@ -60,15 +56,13 @@ public class GameThread extends Thread {
                     }
                 }
             }
-            long now = System.nanoTime() ;
+            long now = System.nanoTime();
             // Interval to redraw game
             // (Change nanoseconds to milliseconds)
-            long waitTime = (now - startTime)/1000000;
-            if(waitTime < 10)  {
-                waitTime= 10; // Millisecond.
-            }
-            try{
-                this.sleep(waitTime);
+            long waitTime = (now - startTime) / 1000000;
+            try {
+                if (waitTime < 30)
+                    this.sleep(30 - waitTime);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
