@@ -1,9 +1,12 @@
 package com.ut3.arenasurvivor;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Rect;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -11,6 +14,8 @@ import android.view.SurfaceView;
 import androidx.annotation.NonNull;
 
 import com.ut3.arenasurvivor.entities.character.impl.Enemy;
+
+import com.ut3.arenasurvivor.activities.MainMenuActivity;
 import com.ut3.arenasurvivor.entities.character.impl.Player;
 import com.ut3.arenasurvivor.entities.impl.Projectile;
 
@@ -23,14 +28,15 @@ import java.util.concurrent.ConcurrentHashMap;
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     private GameThread thread;
-
+    private Long startTime;
+    private SharedPreferences sharedPreferences;
     private Player player;
     private Map<Enemy, Integer> enemies;
     private List<Projectile> projectiles;
 
     private EnemySpawner spawner;
 
-    public GameView(Context context) {
+    public GameView(Context context, SharedPreferences sharedPreferences) {
         super(context);
         getHolder().addCallback(this);
         //Variables init
@@ -46,6 +52,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void update() {
+
         this.player.update();
         for (Enemy enemy : enemies.keySet()) {
             enemy.update();
@@ -62,6 +69,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         Bitmap playerBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.chibi1);
         player = new Player(this, playerBitmap, 0, 0);
         //Thread Start
+        thread = new GameThread(getHolder(), this, sharedPreferences);
+
         thread.setRunning(true);
         thread.start();
     }
@@ -89,6 +98,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     public synchronized void draw(Canvas canvas) {
         super.draw(canvas);
         if (canvas != null) {
+            Paint paint = new Paint();
+            paint.setColor(Color.YELLOW);
+            canvas.drawRect(0, canvas.getHeight()-100, canvas.getWidth(), canvas.getHeight(), paint);
             player.draw(canvas);
             for (Enemy enemy : enemies.keySet()) {
                 enemy.draw(canvas);
