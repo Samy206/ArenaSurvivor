@@ -8,15 +8,22 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import androidx.annotation.NonNull;
 
+import com.ut3.arenasurvivor.entities.character.impl.Enemy;
+
 import com.ut3.arenasurvivor.activities.MainMenuActivity;
 import com.ut3.arenasurvivor.entities.character.impl.Player;
 import com.ut3.arenasurvivor.entities.impl.Projectile;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
@@ -24,37 +31,46 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private Long startTime;
     private SharedPreferences sharedPreferences;
     private Player player;
-    private Projectile projectile;
+    private Map<Enemy, Integer> enemies;
+    private List<Projectile> projectiles;
 
+    private EnemySpawner spawner;
 
     public GameView(Context context, SharedPreferences sharedPreferences) {
         super(context);
-        this.startTime = System.nanoTime();
-        this.sharedPreferences = sharedPreferences;
-        Drawable background = getResources().getDrawable(R.mipmap.ic_launcher_background);
-        //setBackground(background);
         getHolder().addCallback(this);
-        thread = new GameThread(getHolder(), this, sharedPreferences);
-        projectile = new Projectile("ProjectileA",
-                new Rect(100, 100, 200, 200));
+        //Variables init
+        //enemies = Collections.synchronizedList(new ArrayList<>());
+        enemies = new ConcurrentHashMap<>();
+        projectiles = new ArrayList<>();
+        thread = new GameThread(getHolder(), this);
+
+        Bitmap enemyBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.output_onlinepngtools);
+        spawner = new EnemySpawner(this, enemyBitmap);
+
         setFocusable(true);
     }
 
-    public void update(long timePlayed) {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        long score = (long) ((System.nanoTime() - this.startTime) / (2*Math.pow(10,9)));
-        editor.putLong(MainMenuActivity.SHARED_PREF, score);
-        editor.apply();
-        editor.commit();
-        projectile.move(5, 10);
+    public void update() {
+
         this.player.update();
+        for (Enemy enemy : enemies.keySet()) {
+            enemy.update();
+        }
+        for (Projectile projectile : projectiles) {
+            projectile.move(5, 10);
+        }
+        spawner.update();
     }
 
     @Override
     public void surfaceCreated(@NonNull SurfaceHolder holder) {
+        //Entities init
         Bitmap playerBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.chibi1);
         player = new Player(this, playerBitmap, 0, 0);
+        //Thread Start
         thread = new GameThread(getHolder(), this, sharedPreferences);
+
         thread.setRunning(true);
         thread.start();
     }
@@ -79,16 +95,40 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     @Override
-    public void draw(Canvas canvas) {
+    public synchronized void draw(Canvas canvas) {
         super.draw(canvas);
         if (canvas != null) {
             Paint paint = new Paint();
             paint.setColor(Color.YELLOW);
             canvas.drawRect(0, canvas.getHeight()-100, canvas.getWidth(), canvas.getHeight(), paint);
             player.draw(canvas);
-            projectile.draw(canvas);
-
-
+            for (Enemy enemy : enemies.keySet()) {
+                enemy.draw(canvas);
+            }
+            for (Projectile projectile : projectiles) {
+                projectile.draw(canvas);
+            }
         }
+    }
+
+    public void createProjectileAt(int x, int y) {
+        Projectile newProjectile = new Projectile("projectile" + projectiles.size(), new Rect(x, y, x + 10, y + 10));
+        projectiles.add(newProjectile);
+    }
+
+    public void destroyEnemy(Enemy enemy) {
+        enemies.remove(enemy);
+    }
+
+    public void putEnemies(Enemy enemy){
+        enemies.put(enemy, enemies.size());
+    }
+
+    public int getPlayerX(){
+        return this.player.getX();
+    }
+
+    public int getPlayerY(){
+        return this.player.getY();
     }
 }
