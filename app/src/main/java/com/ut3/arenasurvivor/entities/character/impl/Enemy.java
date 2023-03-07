@@ -19,7 +19,6 @@ public class Enemy extends Character {
     private float fireRate;
 
     private long lastShotTime = -1;
-
     private int nbBullets;
 
     public Enemy(GameView gameView, Bitmap image, int x, int y) {

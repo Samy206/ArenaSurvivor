@@ -38,7 +38,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         enemies = new ConcurrentHashMap<>();
         projectiles = new ArrayList<>();
         thread = new GameThread(getHolder(), this);
-        spawner = new EnemySpawner(this);
+
+        Bitmap enemyBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.output_onlinepngtools);
+        spawner = new EnemySpawner(this, enemyBitmap);
+
         setFocusable(true);
     }
 
@@ -57,10 +60,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     public void surfaceCreated(@NonNull SurfaceHolder holder) {
         //Entities init
         Bitmap playerBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.chibi1);
-        Bitmap enemyBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.output_onlinepngtools);
         player = new Player(this, playerBitmap, 0, 0);
-        enemies.put(new Enemy(this, enemyBitmap, 150, 150), 0);
-        enemies.put(new Enemy(this, enemyBitmap, 300, 150), 0);
         //Thread Start
         thread.setRunning(true);
         thread.start();
@@ -110,5 +110,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     public void putEnemies(Enemy enemy){
         enemies.put(enemy, enemies.size());
+    }
+
+    public int getPlayerX(){
+        return this.player.getX();
+    }
+
+    public int getPlayerY(){
+        return this.player.getY();
     }
 }
