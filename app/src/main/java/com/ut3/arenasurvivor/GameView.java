@@ -43,7 +43,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         //enemies = Collections.synchronizedList(new ArrayList<>());
         enemies = new ConcurrentHashMap<>();
         projectiles = new ArrayList<>();
-        thread = new GameThread(getHolder(), this);
+        thread = new GameThread(getHolder(), this, sharedPreferences);
 
         Bitmap enemyBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.output_onlinepngtools);
         spawner = new EnemySpawner(this, enemyBitmap);
