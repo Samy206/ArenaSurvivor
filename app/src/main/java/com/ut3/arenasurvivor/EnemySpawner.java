@@ -3,10 +3,12 @@ package com.ut3.arenasurvivor;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Rect;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
+import android.view.WindowMetrics;
 
 import com.ut3.arenasurvivor.entities.character.impl.Enemy;
 import com.ut3.arenasurvivor.entities.character.impl.Player;
@@ -17,7 +19,7 @@ public class EnemySpawner {
 
     private Bitmap enemySprite;
 
-    private final int  LOWEST_SPAWN_HEIGHT = 800;
+    private final int  LOWEST_SPAWN_HEIGHT = 600;
 
     private int WAIT_TIME = 500;
     private int waitTimer;
@@ -46,10 +48,11 @@ public class EnemySpawner {
 
     private Enemy createEnemyWithRandomPos(){
         WindowManager wm = (WindowManager) gameView.getContext().getSystemService(Context.WINDOW_SERVICE);
-        Display display = wm.getDefaultDisplay();
+        WindowMetrics metrics = wm.getCurrentWindowMetrics();
+        Rect rect = metrics.getBounds();
 
-        int x = (int) (Math.random() * (display.getWidth() - enemySprite.getWidth())) + enemySprite.getWidth();
-        int y = (int) (Math.random() * (display.getHeight() - LOWEST_SPAWN_HEIGHT)) + enemySprite.getHeight();
+        int x = (int) (Math.random() * (rect.right - enemySprite.getWidth())) + enemySprite.getWidth();
+        int y = (int) (Math.random() * (rect.bottom - LOWEST_SPAWN_HEIGHT)) + enemySprite.getHeight();
 
         return new Enemy(gameView, enemySprite, x, y);
     }
