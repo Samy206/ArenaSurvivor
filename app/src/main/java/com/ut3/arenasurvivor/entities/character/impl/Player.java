@@ -26,6 +26,7 @@ public class Player extends Character {
     private Bitmap[] rightToLefts;
     private Bitmap[] topToBottoms;
     private Bitmap[] bottomToTops;
+    private Rect hitBox;
 
     public static final float VELOCITY = 0.1f;
 
@@ -51,6 +52,15 @@ public class Player extends Character {
             this.leftToRights[col] = this.createSubImageAt(ROW_LEFT_TO_RIGHT, col);
             this.bottomToTops[col] = this.createSubImageAt(ROW_BOTTOM_TO_TOP, col);
         }
+
+        int cornersHeight = this.height / 2;
+        int cornersWidth = this.width / 2;
+
+        this.hitBox = new Rect(x - cornersWidth,
+                        y - cornersHeight,
+                        x + cornersWidth ,
+                        y + cornersHeight
+                    );
     }
 
     public Bitmap[] getMoveBitmaps() {
@@ -76,8 +86,6 @@ public class Player extends Character {
     public void update() {
         this.colUsing = (this.colUsing + 1) % this.colCount;
 
-
-
         //Current time in nanoseconds
         long now = System.nanoTime();
 
@@ -95,8 +103,14 @@ public class Player extends Character {
         double movingVectorLength = Math.sqrt(movingVectorX ^ 2 + movingVectorY ^ 2);
 
         //Calculate the new position of the game character
-        this.x = x + (int) (distance * movingVectorX / movingVectorLength);
-        this.y = y + (int) (distance * movingVectorY / movingVectorLength);
+
+        int xOffset = (int) (distance * movingVectorX / movingVectorLength);
+        int yOffset = (int) (distance * movingVectorY / movingVectorLength);
+
+        this.x = x + xOffset;
+        this.y = y + yOffset;
+
+        this.hitBox.offset(xOffset, yOffset);
 
         //When the game's character touches the edge of the screen, then change direction
         if (this.x < 0) {
@@ -154,6 +168,10 @@ public class Player extends Character {
 
     @Override
     public boolean detectCollision(Rect dangerHitBox) {
-        return false;
+        return (dangerHitBox != null) && hitBox.intersect(dangerHitBox);
+    }
+
+    public Rect getHitBox() {
+        return hitBox;
     }
 }
