@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
@@ -34,7 +35,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private SharedPreferences sharedPreferences;
     private Player player;
     private Map<Enemy, Integer> enemies;
-    private List<Projectile> projectiles;
+    private ArrayBlockingQueue<Projectile> projectiles;
 
     private EnemySpawner spawner;
 
@@ -44,7 +45,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         //Variables init
         //enemies = Collections.synchronizedList(new ArrayList<>());
         enemies = new ConcurrentHashMap<>();
-        projectiles = new ArrayList<>();
+        projectiles = new ArrayBlockingQueue<>(100);
         thread = new GameThread(getHolder(), this, sharedPreferences);
 
         Bitmap enemyBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.output_onlinepngtools);
@@ -60,9 +61,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             enemy.update();
         }
         for (Projectile projectile : projectiles) {
-            projectile.move(5, 10);
+            projectile.move();
         }
         spawner.update();
+        if(projectiles.size() > 50){
+            projectiles.poll();
+        }
+        Log.d("PROJ", "update: projectils" + projectiles.size());
     }
 
     @Override
@@ -114,7 +119,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void createProjectileAt(int x, int y) {
-        Projectile newProjectile = new Projectile("projectile" + projectiles.size(), new Rect(x, y, x + 10, y + 10));
+        Log.d("X", "createProjectileAt: " + x);
+        Projectile newProjectile = new Projectile("projectile" + projectiles.size(), x, y, getPlayerX(), getPlayerY());
         projectiles.add(newProjectile);
     }
 
