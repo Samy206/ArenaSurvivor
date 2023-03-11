@@ -8,6 +8,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -67,7 +69,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     public void surfaceCreated(@NonNull SurfaceHolder holder) {
         //Entities init
         Bitmap playerBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.chibi1);
-        player = new Player(this, playerBitmap, 0, 0);
+        player = new Player(this, playerBitmap, 500, 500);
         //Thread Start
         thread = new GameThread(getHolder(), this, sharedPreferences);
 
@@ -131,4 +133,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     public int getPlayerY(){
         return this.player.getY();
     }
+
+    public Player getPlayer(){
+        return this.player;
+    }
+
+
 }
