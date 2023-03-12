@@ -4,6 +4,8 @@ import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.view.SurfaceHolder;
 
+import com.ut3.arenasurvivor.GameView;
+
 import java.util.logging.Logger;
 
 public class GameThread extends Thread {

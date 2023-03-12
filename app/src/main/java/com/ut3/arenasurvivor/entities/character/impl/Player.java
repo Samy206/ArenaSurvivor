@@ -5,7 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.util.Log;
 
-import com.ut3.arenasurvivor.game.logic.main.GameView;
+import com.ut3.arenasurvivor.GameView;
 import com.ut3.arenasurvivor.entities.character.Character;
 
 public class Player extends Character {

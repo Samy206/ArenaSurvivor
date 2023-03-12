@@ -7,24 +7,20 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Rect;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import androidx.annotation.NonNull;
 
+import com.ut3.arenasurvivor.game.logic.main.GameThread;
 import com.ut3.arenasurvivor.game.logic.utils.EnemySpawner;
-import com.ut3.arenasurvivor.R;
 import com.ut3.arenasurvivor.entities.character.impl.Enemy;
 
 import com.ut3.arenasurvivor.entities.character.impl.Player;
 import com.ut3.arenasurvivor.entities.impl.Projectile;
 import com.ut3.arenasurvivor.game.logic.utils.ScoreCalculator;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
