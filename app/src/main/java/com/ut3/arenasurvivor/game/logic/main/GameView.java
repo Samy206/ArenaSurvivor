@@ -82,7 +82,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     public void surfaceCreated(@NonNull SurfaceHolder holder) {
         //Entities init
         Bitmap playerBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.chibi1);
-        player = new Player(this, playerBitmap, 0, 700);
+        int playerHeight = (int) (this.getHeight() * 0.8);
+        player = new Player(this, playerBitmap, 0, playerHeight);
         
         //Thread Start
         thread = new GameThread(getHolder(), this, sharedPreferences);

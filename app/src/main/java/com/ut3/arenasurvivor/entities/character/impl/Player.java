@@ -141,12 +141,5 @@ public class Player extends Character {
         this.canMove = canMove;
     }
 
-    public void move(int direction) {
-        this.direction = direction;
-        this.setCanMove(true);
-    }
 
-    public void setCanMove(boolean canMove) {
-        this.canMove = canMove;
-    }
 }
