@@ -84,7 +84,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         //Entities init
         Bitmap playerBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.chibi1);
         player = new Player(this, playerBitmap, 0, 700);
-        player.setMovingVector(10, 0);
         //Thread Start
         thread = new GameThread(getHolder(), this, sharedPreferences);
 
@@ -131,6 +130,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     public void createProjectileAt(int x, int y) {
         Projectile newProjectile = new Projectile("projectile" + projectiles.size(), x, y, getPlayerX(), getPlayerY());
         projectiles.add(newProjectile);
+    }
+
+    private int getPlayerY() {
+        return player.getY();
+    }
+
+    private int getPlayerX() {
+        return player.getX();
     }
 
     public void destroyEnemy(Enemy enemy) {

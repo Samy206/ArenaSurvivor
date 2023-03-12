@@ -21,7 +21,7 @@ public class GameActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences(MainMenuActivity.SHARED_PREF, MODE_PRIVATE);
         super.onCreate(savedInstanceState);
         //No Title
-        gameView = new GameView(this, sharedPreferences);
+        gameView = new GameView(this, sharedPreferences, this);
         setContentView(gameView);
 
         gameView.setOnTouchListener(new Controller());

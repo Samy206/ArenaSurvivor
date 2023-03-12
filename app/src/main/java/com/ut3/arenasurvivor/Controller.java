@@ -4,6 +4,8 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.ut3.arenasurvivor.game.logic.main.GameView;
+
 public class Controller implements View.OnTouchListener {
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
