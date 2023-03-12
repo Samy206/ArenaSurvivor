@@ -6,8 +6,8 @@ import android.graphics.Rect;
 import android.view.WindowManager;
 import android.view.WindowMetrics;
 
-import com.ut3.arenasurvivor.game.logic.main.GameView;
 import com.ut3.arenasurvivor.entities.character.impl.Enemy;
+import com.ut3.arenasurvivor.game.logic.main.GameView;
 
 public class EnemySpawner {
 

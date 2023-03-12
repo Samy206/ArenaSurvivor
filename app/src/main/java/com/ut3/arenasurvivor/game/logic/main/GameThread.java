@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.view.SurfaceHolder;
 
+
 import java.util.logging.Logger;
 
 public class GameThread extends Thread {
