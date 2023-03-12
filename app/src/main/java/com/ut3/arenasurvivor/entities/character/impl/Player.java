@@ -2,6 +2,8 @@ package com.ut3.arenasurvivor.entities.character.impl;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.Log;
 
@@ -27,6 +29,7 @@ public class Player extends Character {
     private Bitmap[] rightToLefts;
     private Bitmap[] topToBottoms;
     private Bitmap[] bottomToTops;
+    private Rect hitBox;
 
     public static final float VELOCITY = 0.4f;
 
@@ -53,6 +56,12 @@ public class Player extends Character {
             this.leftToRights[col] = this.createSubImageAt(ROW_LEFT_TO_RIGHT, col);
             this.bottomToTops[col] = this.createSubImageAt(ROW_BOTTOM_TO_TOP, col);
         }
+
+        this.hitBox = new Rect(x ,
+                        y ,
+                        x + this.width ,
+                        y + this.height
+                    );
     }
 
     public Bitmap[] getMoveBitmaps() {
@@ -91,15 +100,18 @@ public class Player extends Character {
 
             //Distance moves
             float distance = VELOCITY * deltaTime;
+            int offset = (int) (direction * distance);
 
             //Calculate the new position of the game character
-            this.x = (int) (x + direction * distance);
+            this.x = x + offset;
 
             if(this.direction > 0){
                 this.rowUsing = ROW_LEFT_TO_RIGHT;
             }else{
                 this.rowUsing = ROW_RIGHT_TO_LEFT;
             }
+            this.hitBox.offset(offset, 0);
+
         }
     }
 
@@ -113,7 +125,20 @@ public class Player extends Character {
 
     @Override
     public boolean detectCollision(Rect dangerHitBox) {
-        return false;
+        return (dangerHitBox != null) && hitBox.intersect(dangerHitBox);
+    }
+
+    public Rect getHitBox() {
+        return hitBox;
+    }
+
+    public void move(int direction) {
+        this.direction = direction;
+        this.setCanMove(true);
+    }
+
+    public void setCanMove(boolean canMove) {
+        this.canMove = canMove;
     }
 
     public void move(int direction) {
