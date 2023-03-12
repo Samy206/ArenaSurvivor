@@ -83,6 +83,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         //Entities init
         Bitmap playerBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.chibi1);
         player = new Player(this, playerBitmap, 0, 700);
+        
         //Thread Start
         thread = new GameThread(getHolder(), this, sharedPreferences);
 

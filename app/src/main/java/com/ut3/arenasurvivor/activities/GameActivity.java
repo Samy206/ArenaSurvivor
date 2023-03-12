@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+
 import com.ut3.arenasurvivor.game.logic.main.GameView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -31,4 +32,5 @@ public class GameActivity extends AppCompatActivity {
         Intent intent = new Intent(this, MainMenuActivity.class);
         startActivity(intent);
     }
+
 }
