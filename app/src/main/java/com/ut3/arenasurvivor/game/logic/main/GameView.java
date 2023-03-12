@@ -15,8 +15,10 @@ import androidx.annotation.NonNull;
 
 import com.ut3.arenasurvivor.game.logic.utils.EnemySpawner;
 import com.ut3.arenasurvivor.R;
+import com.ut3.arenasurvivor.activities.GameActivity;
 import com.ut3.arenasurvivor.entities.character.impl.Enemy;
 
+import com.ut3.arenasurvivor.activities.MainMenuActivity;
 import com.ut3.arenasurvivor.entities.character.impl.Player;
 import com.ut3.arenasurvivor.entities.impl.Projectile;
 import com.ut3.arenasurvivor.game.logic.utils.ScoreCalculator;
@@ -28,6 +30,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
+    private GameActivity gameActivity;
     private GameThread thread;
     private Long startTime;
     private SharedPreferences sharedPreferences;
@@ -38,7 +41,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private ScoreCalculator calculator;
     private EnemySpawner spawner;
 
-    public GameView(Context context, SharedPreferences sharedPreferences) {
+    public GameView(Context context, SharedPreferences sharedPreferences, GameActivity gameActivity) {
         super(context);
         getHolder().addCallback(this);
         //Variables init
@@ -47,6 +50,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         projectiles = new ArrayList<>();
         thread = new GameThread(getHolder(), this, sharedPreferences);
         startTime = System.nanoTime();
+        this.gameActivity = gameActivity;
         Bitmap enemyBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.output_onlinepngtools);
         spawner = new EnemySpawner(this, enemyBitmap);
         calculator = new ScoreCalculator(sharedPreferences);
@@ -66,13 +70,16 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
 
         calculator.updateScore(startTime);
+
+        detectCollision();
     }
 
     @Override
     public void surfaceCreated(@NonNull SurfaceHolder holder) {
         //Entities init
         Bitmap playerBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.chibi1);
-        player = new Player(this, playerBitmap, 0, 0);
+        player = new Player(this, playerBitmap, 0, 700);
+        player.setMovingVector(10, 0);
         //Thread Start
         thread = new GameThread(getHolder(), this, sharedPreferences);
 
@@ -129,11 +136,29 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         enemies.put(enemy, enemies.size());
     }
 
-    public int getPlayerX(){
-        return this.player.getX();
+    public void endGame() {
+        this.projectiles.clear();
+        this.enemies.clear();
     }
 
-    public int getPlayerY(){
-        return this.player.getY();
+    private void detectCollision() {
+
+        for(Projectile projectile : projectiles) {
+            if(projectile.detectCollision(player.getHitBox())) {
+                try {
+                    endGame();
+                    thread.setRunning(false);
+                    this.gameActivity.returnToMenuActivity();
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                }
+                break;
+            }
+        }
+
+
     }
+
+
 }
