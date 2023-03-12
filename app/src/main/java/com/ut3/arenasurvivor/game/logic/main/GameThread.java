@@ -1,12 +1,7 @@
-package com.ut3.arenasurvivor;
+package com.ut3.arenasurvivor.game.logic.main;
 
-import android.app.Application;
-import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.preference.PreferenceManager;
 import android.view.SurfaceHolder;
 
 import java.util.logging.Logger;
@@ -68,7 +63,7 @@ public class GameThread extends Thread {
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-            startTime = System.nanoTime();
+
         }
     }
 }
