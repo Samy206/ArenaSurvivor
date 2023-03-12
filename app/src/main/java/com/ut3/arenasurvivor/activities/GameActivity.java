@@ -9,7 +9,7 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.ut3.arenasurvivor.Controller;
-import com.ut3.arenasurvivor.GameView;
+import com.ut3.arenasurvivor.game.logic.main.GameView;
 
 public class GameActivity extends AppCompatActivity {
 
