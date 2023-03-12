@@ -5,7 +5,7 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.ut3.arenasurvivor.GameView;
+import com.ut3.arenasurvivor.game.logic.main.GameView;
 
 public class GameActivity extends AppCompatActivity {
 
