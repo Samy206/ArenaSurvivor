@@ -5,7 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.util.Log;
 
-import com.ut3.arenasurvivor.GameView;
+import com.ut3.arenasurvivor.game.logic.main.GameView;
 import com.ut3.arenasurvivor.entities.character.Character;
 
 public class Player extends Character {
@@ -27,6 +27,7 @@ public class Player extends Character {
     private Bitmap[] rightToLefts;
     private Bitmap[] topToBottoms;
     private Bitmap[] bottomToTops;
+    private Rect hitBox;
 
     public static final float VELOCITY = 0.4f;
 
@@ -53,6 +54,15 @@ public class Player extends Character {
             this.leftToRights[col] = this.createSubImageAt(ROW_LEFT_TO_RIGHT, col);
             this.bottomToTops[col] = this.createSubImageAt(ROW_BOTTOM_TO_TOP, col);
         }
+
+        int cornersHeight = this.height / 2;
+        int cornersWidth = this.width / 2;
+
+        this.hitBox = new Rect(x - cornersWidth,
+                        y - cornersHeight,
+                        x + cornersWidth ,
+                        y + cornersHeight
+                    );
     }
 
     public Bitmap[] getMoveBitmaps() {
@@ -113,7 +123,11 @@ public class Player extends Character {
 
     @Override
     public boolean detectCollision(Rect dangerHitBox) {
-        return false;
+        return (dangerHitBox != null) && hitBox.intersect(dangerHitBox);
+    }
+
+    public Rect getHitBox() {
+        return hitBox;
     }
 
     public void move(int direction) {

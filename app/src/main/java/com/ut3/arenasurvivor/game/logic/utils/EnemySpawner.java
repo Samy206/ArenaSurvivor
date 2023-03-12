@@ -14,8 +14,14 @@ public class EnemySpawner {
     private GameView gameView;
 
     private Bitmap enemySprite;
+    private int enemyWidth;
+    private int enemyHeight;
 
-    private final int  LOWEST_SPAWN_HEIGHT = 600;
+    private int windowWidth;
+    private int windowHeight;
+
+    private int  lowestSpawnHeight;
+
 
     private int WAIT_TIME = 500;
     private int waitTimer;
@@ -26,6 +32,24 @@ public class EnemySpawner {
         this.gameView = gameView;
         this.enemySprite = enemySprite;
         waitTimer = WAIT_TIME;
+        setUpResolutionValues();
+    }
+
+    /**
+     * Setup class attributes to avoid repeted operations
+     */
+    public void setUpResolutionValues() {
+
+        WindowManager wm = (WindowManager) gameView.getContext().getSystemService(Context.WINDOW_SERVICE);
+        WindowMetrics metrics = wm.getCurrentWindowMetrics();
+        Rect rect = metrics.getBounds();
+
+        windowHeight = rect.bottom;
+        windowWidth = rect.right;
+        enemyHeight = enemySprite.getHeight();
+        enemyWidth = enemySprite.getWidth();
+        lowestSpawnHeight = (int) (windowHeight * 0.8);
+
     }
 
     public void update(){
@@ -43,12 +67,9 @@ public class EnemySpawner {
     }
 
     private Enemy createEnemyWithRandomPos(){
-        WindowManager wm = (WindowManager) gameView.getContext().getSystemService(Context.WINDOW_SERVICE);
-        WindowMetrics metrics = wm.getCurrentWindowMetrics();
-        Rect rect = metrics.getBounds();
 
-        int x = (int) (Math.random() * (rect.right - enemySprite.getWidth())) + enemySprite.getWidth();
-        int y = (int) (Math.random() * (rect.bottom - LOWEST_SPAWN_HEIGHT)) + enemySprite.getHeight();
+        int x = (int) (Math.random() * (windowWidth - enemyWidth)) + enemyWidth;
+        int y = (int) (Math.random() * (windowHeight - lowestSpawnHeight)) + enemyHeight;
 
         return new Enemy(gameView, enemySprite, x, y);
     }
