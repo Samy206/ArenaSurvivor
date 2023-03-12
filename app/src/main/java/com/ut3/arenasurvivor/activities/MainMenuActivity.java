@@ -14,7 +14,7 @@ import com.ut3.arenasurvivor.R;
 
 public class MainMenuActivity extends AppCompatActivity {
     public static final String SHARED_PREF = "SCORE";
-    public static long MAX_SCORE = 0;
+    public Long scoreMax;
     private TextView scoreView;
 
     public void startGameActivity(View view) {
@@ -31,8 +31,8 @@ public class MainMenuActivity extends AppCompatActivity {
 
         loadScore();
         // Setting score value using shared preference
-        scoreView = (TextView) findViewById(R.id.Score);
-        scoreView.setText("Meilleur score : " + MAX_SCORE);
+        scoreView = findViewById(R.id.Score);
+        scoreView.setText("Meilleur score : " + scoreMax);
 
     }
 
@@ -42,16 +42,13 @@ public class MainMenuActivity extends AppCompatActivity {
         super.onResume();
         loadScore();
         // Setting score value using shared preference
-        scoreView = (TextView) findViewById(R.id.Score);
-        scoreView.setText("Meilleur score : " + MAX_SCORE);
+        scoreView = findViewById(R.id.Score);
+        scoreView.setText("Meilleur score : " + scoreMax);
     }
-
 
     public void loadScore() {
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREF, Context.MODE_PRIVATE);
-        long compareValue = sharedPreferences.getLong(SHARED_PREF, 0);
-
-        MAX_SCORE = Math.max(MAX_SCORE, compareValue);
+        scoreMax = sharedPreferences.getLong(SHARED_PREF, 0);
     }
 
 }

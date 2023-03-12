@@ -1,4 +1,4 @@
-package com.ut3.arenasurvivor;
+package com.ut3.arenasurvivor.game.logic.main;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -13,11 +13,15 @@ import android.view.SurfaceView;
 
 import androidx.annotation.NonNull;
 
+import com.ut3.arenasurvivor.game.logic.utils.EnemySpawner;
+import com.ut3.arenasurvivor.R;
 import com.ut3.arenasurvivor.activities.GameActivity;
 import com.ut3.arenasurvivor.entities.character.impl.Enemy;
 
+import com.ut3.arenasurvivor.activities.MainMenuActivity;
 import com.ut3.arenasurvivor.entities.character.impl.Player;
 import com.ut3.arenasurvivor.entities.impl.Projectile;
+import com.ut3.arenasurvivor.game.logic.utils.ScoreCalculator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +38,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private Map<Enemy, Integer> enemies;
     private List<Projectile> projectiles;
 
+    private ScoreCalculator calculator;
     private EnemySpawner spawner;
 
     public GameView(Context context, SharedPreferences sharedPreferences, GameActivity gameActivity) {
@@ -44,10 +49,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         enemies = new ConcurrentHashMap<>();
         projectiles = new ArrayList<>();
         thread = new GameThread(getHolder(), this, sharedPreferences);
+        startTime = System.nanoTime();
         this.gameActivity = gameActivity;
         Bitmap enemyBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.output_onlinepngtools);
         spawner = new EnemySpawner(this, enemyBitmap);
-
+        calculator = new ScoreCalculator(sharedPreferences);
         setFocusable(true);
     }
 
@@ -61,6 +67,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             projectile.move(5, 10);
         }
         spawner.update();
+
+
+        calculator.updateScore(startTime);
 
         detectCollision();
     }

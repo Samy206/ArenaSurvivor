@@ -1,17 +1,13 @@
-package com.ut3.arenasurvivor;
+package com.ut3.arenasurvivor.game.logic.utils;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Rect;
-import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.Display;
 import android.view.WindowManager;
 import android.view.WindowMetrics;
 
+import com.ut3.arenasurvivor.game.logic.main.GameView;
 import com.ut3.arenasurvivor.entities.character.impl.Enemy;
-import com.ut3.arenasurvivor.entities.character.impl.Player;
 
 public class EnemySpawner {
 

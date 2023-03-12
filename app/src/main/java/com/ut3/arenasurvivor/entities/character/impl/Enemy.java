@@ -4,7 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 
-import com.ut3.arenasurvivor.GameView;
+import com.ut3.arenasurvivor.game.logic.main.GameView;
 import com.ut3.arenasurvivor.entities.character.Character;
 
 public class Enemy extends Character {
