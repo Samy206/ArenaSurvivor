@@ -3,6 +3,7 @@ package com.ut3.arenasurvivor.entities.character.impl;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.util.Log;
 
 import com.ut3.arenasurvivor.GameView;
 import com.ut3.arenasurvivor.entities.character.Character;
@@ -95,9 +96,9 @@ public class Player extends Character {
         double movingVectorLength = Math.sqrt(movingVectorX ^ 2 + movingVectorY ^ 2);
 
         //Calculate the new position of the game character
-        this.x = x + (int) (distance * movingVectorX / movingVectorLength);
-        this.y = y + (int) (distance * movingVectorY / movingVectorLength);
-
+        this.x = (int) (x + distance * movingVectorX / movingVectorLength);
+        this.y = (int) (y + distance * movingVectorY / movingVectorLength);
+        Log.d("Player position", "Im at : " + x + " ; " + y);
         //When the game's character touches the edge of the screen, then change direction
         if (this.x < 0) {
             this.x = 0;
@@ -155,5 +156,54 @@ public class Player extends Character {
     @Override
     public boolean detectCollision(Rect dangerHitBox) {
         return false;
+    }
+
+    public void move(int direction){
+        //Current time in nanoseconds
+        long now = System.nanoTime();
+
+        //Never once did draw
+        if (lastDrawNanoTime == -1) {
+            lastDrawNanoTime = now;
+        }
+
+        //Change nanoseconds to milliseconds (1 nanosecond = 1000000 milliseconds)
+        int deltaTime = (int) ((now - lastDrawNanoTime) / 1000000);
+
+        //Distance moves
+        float distance = VELOCITY * deltaTime;
+
+        double movingVectorLength = Math.sqrt(movingVectorX ^ 2 + movingVectorY ^ 2);
+
+        //Calculate the new position of the game character
+        this.x = x + (int) ((distance * movingVectorX / movingVectorLength) * direction);
+        //this.y = y + (int) (distance * movingVectorY / movingVectorLength);
+    }
+
+
+    /**
+     * Dash into a direction given by parameter, -1 being tot the left and 1 to the right
+     * @param direction
+     */
+    public void dash(int direction){
+        //Current time in nanoseconds
+        long now = System.nanoTime();
+
+        //Never once did draw
+        if (lastDrawNanoTime == -1) {
+            lastDrawNanoTime = now;
+        }
+
+        //Change nanoseconds to milliseconds (1 nanosecond = 1000000 milliseconds)
+        int deltaTime = (int) ((now - lastDrawNanoTime) / 1000000);
+
+        //Distance moves
+        float distance = VELOCITY * deltaTime;
+
+        double movingVectorLength = Math.sqrt(movingVectorX ^ 2 + movingVectorY ^ 2);
+        int distanceChanged = (int) (( (movingVectorX * 5) * direction));
+        Log.d("Dash", "distance : " + distanceChanged);
+        //Calculate the new position of the game character
+        this.x = x + distanceChanged;
     }
 }

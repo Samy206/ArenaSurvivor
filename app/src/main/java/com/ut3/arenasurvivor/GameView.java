@@ -8,6 +8,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -35,6 +36,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private List<Projectile> projectiles;
 
     private EnemySpawner spawner;
+
+    // Variables for dash
+    private float x1,x2;
+    private final float MIN_DISTANCE = 150;
 
     public GameView(Context context, SharedPreferences sharedPreferences) {
         super(context);
@@ -67,7 +72,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     public void surfaceCreated(@NonNull SurfaceHolder holder) {
         //Entities init
         Bitmap playerBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.chibi1);
-        player = new Player(this, playerBitmap, 0, 0);
+        player = new Player(this, playerBitmap, 0, 700);
+        player.setMovingVector(10,0);
         //Thread Start
         thread = new GameThread(getHolder(), this, sharedPreferences);
 
@@ -131,4 +137,51 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     public int getPlayerY(){
         return this.player.getY();
     }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event){
+
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                x1 = event.getX();
+                break;
+            case MotionEvent.ACTION_MOVE:
+                float xMove = event.getX();
+                if(xMove <= this.getWidth()/2){
+                    this.player.move(-1);
+                }else{
+                    this.player.move(1);
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+                x2 = event.getX();
+                float deltaX = x2 - x1;
+
+                if (Math.abs(deltaX) > MIN_DISTANCE)
+                {
+                    // Left to Right swipe action
+                    if (x2 > x1)
+                    {
+                        //Toast.makeText(this, "Left to Right swipe [Next]", Toast.LENGTH_SHORT).show ();
+                        player.dash(1);
+                        player.setMovingVector(10, 0);
+                    }
+
+                    // Right to left swipe action
+                    else
+                    {
+                        //Toast.makeText(this, "Right to Left swipe [Previous]", Toast.LENGTH_SHORT).show ();
+                        player.dash(-1);
+                        player.setMovingVector(-10, 0);
+                    }
+
+                }
+                break;
+        }
+
+
+        return true;
+    }
+
+
 }
