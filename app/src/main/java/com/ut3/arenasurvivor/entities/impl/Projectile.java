@@ -71,7 +71,6 @@ public class Projectile implements Collidable, Movable {
         int movementX= (int) ((dirX / vectorNormal) *deltaTime * SPEED);
         int movementY = (int) ((dirY / vectorNormal) *deltaTime * SPEED);
 
-        Log.d("PTS", "move: " + movementX+ " " + playerX + "  " + x);
         hitBox.offset(movementX, movementY);
     }
 

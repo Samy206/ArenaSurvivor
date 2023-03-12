@@ -2,6 +2,8 @@ package com.ut3.arenasurvivor.entities.character.impl;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.Log;
 
@@ -55,13 +57,10 @@ public class Player extends Character {
             this.bottomToTops[col] = this.createSubImageAt(ROW_BOTTOM_TO_TOP, col);
         }
 
-        int cornersHeight = this.height / 2;
-        int cornersWidth = this.width / 2;
-
-        this.hitBox = new Rect(x - cornersWidth,
-                        y - cornersHeight,
-                        x + cornersWidth ,
-                        y + cornersHeight
+        this.hitBox = new Rect(x ,
+                        y ,
+                        x + this.width ,
+                        y + this.height
                     );
     }
 
@@ -101,15 +100,18 @@ public class Player extends Character {
 
             //Distance moves
             float distance = VELOCITY * deltaTime;
+            int offset = (int) (direction * distance);
 
             //Calculate the new position of the game character
-            this.x = (int) (x + direction * distance);
+            this.x = x + offset;
 
             if(this.direction > 0){
                 this.rowUsing = ROW_LEFT_TO_RIGHT;
             }else{
                 this.rowUsing = ROW_RIGHT_TO_LEFT;
             }
+            this.hitBox.offset(offset, 0);
+
         }
     }
 
