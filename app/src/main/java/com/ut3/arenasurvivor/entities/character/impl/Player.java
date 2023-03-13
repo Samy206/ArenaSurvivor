@@ -2,9 +2,12 @@ package com.ut3.arenasurvivor.entities.character.impl;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Rect;
+import android.util.Log;
 
-import com.ut3.arenasurvivor.GameView;
+import com.ut3.arenasurvivor.game.logic.main.GameView;
 import com.ut3.arenasurvivor.entities.character.Character;
 
 public class Player extends Character {
@@ -26,11 +29,13 @@ public class Player extends Character {
     private Bitmap[] rightToLefts;
     private Bitmap[] topToBottoms;
     private Bitmap[] bottomToTops;
+    private Rect hitBox;
 
-    public static final float VELOCITY = 0.1f;
+    public static final float VELOCITY = 0.4f;
 
-    public int movingVectorX = 10;
-    public int movingVectorY = 5;
+    private boolean canMove = false;
+
+    private int direction = 0;
 
     private long lastDrawNanoTime = -1;
 
@@ -51,6 +56,12 @@ public class Player extends Character {
             this.leftToRights[col] = this.createSubImageAt(ROW_LEFT_TO_RIGHT, col);
             this.bottomToTops[col] = this.createSubImageAt(ROW_BOTTOM_TO_TOP, col);
         }
+
+        this.hitBox = new Rect(x ,
+                        y ,
+                        x + this.width ,
+                        y + this.height
+                    );
     }
 
     public Bitmap[] getMoveBitmaps() {
@@ -73,73 +84,34 @@ public class Player extends Character {
         return bitmaps[this.colUsing];
     }
 
-    public Rect getHitBox() {
-        return new Rect(x-30, y-30, x+30, y+30);
-    }
-
     public void update() {
-        this.colUsing = (this.colUsing + 1) % this.colCount;
+        if(canMove){
+            this.colUsing = (this.colUsing + 1) % this.colCount;
+            //Change nanoseconds to milliseconds (1 nanosecond = 1000000 milliseconds)
+            //Current time in nanoseconds
+            long now = System.nanoTime();
 
-
-
-        //Current time in nanoseconds
-        long now = System.nanoTime();
-
-        //Never once did draw
-        if (lastDrawNanoTime == -1) {
-            lastDrawNanoTime = now;
-        }
-
-        //Change nanoseconds to milliseconds (1 nanosecond = 1000000 milliseconds)
-        int deltaTime = (int) ((now - lastDrawNanoTime) / 1000000);
-
-        //Distance moves
-        float distance = VELOCITY * deltaTime;
-
-        double movingVectorLength = Math.sqrt(movingVectorX ^ 2 + movingVectorY ^ 2);
-
-        //Calculate the new position of the game character
-        this.x = x + movingVectorX;
-        this.y = y + movingVectorY;
-
-        //When the game's character touches the edge of the screen, then change direction
-        if (this.x < 0) {
-            this.x = 0;
-            this.movingVectorX = -this.movingVectorX;
-        } else if (this.x > this.gameView.getWidth() - width) {
-            this.x = this.gameView.getWidth() - width;
-            this.movingVectorX = -this.movingVectorX;
-        }
-
-        if (this.y < 0) {
-            this.y = 0;
-            this.movingVectorY = -this.movingVectorY;
-        } else if (this.y > this.gameView.getHeight() - height) {
-            this.y = this.gameView.getHeight() - height;
-            this.movingVectorY = -this.movingVectorY;
-        }
-
-        if(this.y > gameView.getHeight()-100){
-            this.y = gameView.getHeight()-groundThickness;
-        }
-
-        //rowUsing
-        if (movingVectorX > 0) {
-            if (movingVectorY > 0 && Math.abs(movingVectorX) < Math.abs(movingVectorY)) {
-                this.rowUsing = ROW_TOP_TO_BOTTOM;
-            } else if (movingVectorY < 0 && Math.abs(movingVectorX) < Math.abs(movingVectorY)) {
-                this.rowUsing = ROW_BOTTOM_TO_TOP;
-            } else {
-                this.rowUsing = ROW_LEFT_TO_RIGHT;
+            //Never once did draw
+            if (lastDrawNanoTime == -1) {
+                lastDrawNanoTime = now;
             }
-        } else {
-            if (movingVectorY > 0 && Math.abs(movingVectorX) < Math.abs(movingVectorY)) {
-                this.rowUsing = ROW_TOP_TO_BOTTOM;
-            } else if (movingVectorY < 0 && Math.abs(movingVectorX) < Math.abs(movingVectorY)) {
-                this.rowUsing = ROW_BOTTOM_TO_TOP;
-            } else {
+
+            int deltaTime = (int) ((now - lastDrawNanoTime) / 1000000);
+
+            //Distance moves
+            float distance = VELOCITY * deltaTime;
+            int offset = (int) (direction * distance);
+
+            //Calculate the new position of the game character
+            this.x = x + offset;
+
+            if(this.direction > 0){
+                this.rowUsing = ROW_LEFT_TO_RIGHT;
+            }else{
                 this.rowUsing = ROW_RIGHT_TO_LEFT;
             }
+            this.hitBox.offset(offset, 0);
+
         }
     }
 
@@ -150,14 +122,24 @@ public class Player extends Character {
         this.lastDrawNanoTime = System.nanoTime();
     }
 
-    public void setMovingVector(int movingVectorX, int movingVectorY) {
-        this.movingVectorX = movingVectorX;
-        this.movingVectorY = movingVectorY;
-    }
-
 
     @Override
     public boolean detectCollision(Rect dangerHitBox) {
-        return false;
+        return (dangerHitBox != null) && hitBox.intersect(dangerHitBox);
     }
+
+    public Rect getHitBox() {
+        return hitBox;
+    }
+
+    public void move(int direction) {
+        this.direction = direction;
+        this.setCanMove(true);
+    }
+
+    public void setCanMove(boolean canMove) {
+        this.canMove = canMove;
+    }
+
+
 }

@@ -4,8 +4,8 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 
-import com.ut3.arenasurvivor.GameView;
 import com.ut3.arenasurvivor.entities.character.Character;
+import com.ut3.arenasurvivor.game.logic.main.GameView;
 
 public class Enemy extends Character {
 
@@ -19,7 +19,6 @@ public class Enemy extends Character {
     private float fireRate;
 
     private long lastShotTime = -1;
-
     private int nbBullets;
 
     public Enemy(GameView gameView, Bitmap image, int x, int y) {
