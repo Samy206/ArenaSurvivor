@@ -2,15 +2,11 @@ package com.ut3.arenasurvivor.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+
 import android.graphics.PixelFormat;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
+
 import android.os.Bundle;
-import android.util.Log;
-import android.view.MotionEvent;
-import android.view.View;
+
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
@@ -19,7 +15,6 @@ import com.ut3.arenasurvivor.game.logic.main.GameView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.ut3.arenasurvivor.Controller;
 
 public class GameActivity extends AppCompatActivity {
 
@@ -40,7 +35,6 @@ public class GameActivity extends AppCompatActivity {
         gameView = new GameView(this, sharedPreferences, this);
         gameView.setZOrderOnTop(true);
         gameView.getHolder().setFormat(PixelFormat.TRANSPARENT);
-        gameView.setOnTouchListener(new Controller());
     }
 
     private RelativeLayout createRootPanel(){

@@ -14,16 +14,14 @@ public class EnemySpawner {
     private GameView gameView;
 
     private Bitmap enemySprite;
+
     private int enemyWidth;
     private int enemyHeight;
-
     private int windowWidth;
     private int windowHeight;
-
     private int  lowestSpawnHeight;
 
-
-    private int WAIT_TIME = 500;
+    private final int WAIT_TIME = 500;
     private int waitTimer;
 
     private long lastUpdateCall = -1;
@@ -36,7 +34,7 @@ public class EnemySpawner {
     }
 
     /**
-     * Setup class attributes to avoid repeted operations
+     * Setup class attributes to avoid repeated operations
      */
     public void setUpResolutionValues() {
 
@@ -67,10 +65,8 @@ public class EnemySpawner {
     }
 
     private Enemy createEnemyWithRandomPos(){
-
         int x = (int) (Math.random() * (windowWidth - enemyWidth)) + enemyWidth;
         int y = (int) (Math.random() * (windowHeight - lowestSpawnHeight)) + enemyHeight;
-
         return new Enemy(gameView, enemySprite, x, y);
     }
 }
