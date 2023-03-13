@@ -115,10 +115,7 @@ public class Player extends Character {
     public void draw(Canvas canvas) {
         Bitmap bitmap = this.getCurrentMoveBitmap();
         canvas.drawBitmap(bitmap, x, y, null);
-        Paint paint = new Paint();
-        paint.setColor(Color.RED);
-        paint.setStyle(Paint.Style.STROKE);
-        canvas.drawRect(hitBox, paint);
+
         //Last draw Time
         this.lastDrawNanoTime = System.nanoTime();
     }
@@ -164,11 +161,11 @@ public class Player extends Character {
 
     /**
      * Dash into a direction given by parameter, -1 being tot the left and 1 to the right
-     * @param direction
      */
     public void dash(int direction){
         //Calculate the new position of the game character
         int offsetX = (int) (direction * VELOCITY * 1000);
         movePlayer(offsetX);
+        canMove = false;
     }
 }

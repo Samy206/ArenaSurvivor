@@ -42,11 +42,6 @@ public class Controller implements View.OnTouchListener {
                 x1 = motionEvent.getX();
                 break;
             case MotionEvent.ACTION_MOVE:
-                // Code optimisation to avoid if & else if.
-                // Direction will be -1 (move to the left) or 1 (move to the right)
-                difference = (x - windowWidthDivider);
-                direction = (int) (difference / Math.abs(difference));
-                player.move(direction);
                 break;
 
             case MotionEvent.ACTION_UP:
@@ -54,7 +49,7 @@ public class Controller implements View.OnTouchListener {
                 x2 = motionEvent.getX();
                 float deltaX = x2 - x1;
 
-                if (Math.abs(deltaX) > MIN_DISTANCE)
+                if (Math.abs(deltaX) > MIN_DISTANCE )
                 {
                     Long now  = System.nanoTime();
                     // Code optimisation to avoid if & else if.
@@ -65,6 +60,13 @@ public class Controller implements View.OnTouchListener {
                         player.dash(direction);
                         lastDashTimer = now;
                     }
+                }
+                else {
+                    // Code optimisation to avoid if & else if.
+                    // Direction will be -1 (move to the left) or 1 (move to the right)
+                    difference = (x1 - player.getX());
+                    direction = (int) (difference / Math.abs(difference));
+                    player.move(direction);
                 }
                 break;
 

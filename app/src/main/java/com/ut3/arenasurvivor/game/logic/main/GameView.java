@@ -7,9 +7,13 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-
+import android.graphics.PorterDuff;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 
@@ -19,6 +23,7 @@ import com.ut3.arenasurvivor.R;
 import com.ut3.arenasurvivor.activities.GameActivity;
 import com.ut3.arenasurvivor.entities.character.impl.Enemy;
 
+import com.ut3.arenasurvivor.activities.MainMenuActivity;
 import com.ut3.arenasurvivor.entities.character.impl.Player;
 import com.ut3.arenasurvivor.entities.impl.Projectile;
 import com.ut3.arenasurvivor.game.logic.utils.ScoreCalculator;
@@ -44,7 +49,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         super(context);
         getHolder().addCallback(this);
         //Variables init
-        //enemies = Collections.synchronizedList(new ArrayList<>());
         enemies = new ConcurrentHashMap<>();
         projectiles = new ArrayBlockingQueue<>(100);
         thread = new GameThread(getHolder(), this, sharedPreferences);
@@ -54,6 +58,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         spawner = new EnemySpawner(this, enemyBitmap);
         calculator = new ScoreCalculator(sharedPreferences);
         setFocusable(true);
+
     }
 
     public void update() {
@@ -65,7 +70,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         for (Projectile projectile : projectiles) {
             projectile.move();
         }
-        spawner.update();
+        //spawner.update();
 
 
         calculator.updateScore(startTime);
@@ -81,7 +86,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     public void surfaceCreated(@NonNull SurfaceHolder holder) {
         //Entities init
         Bitmap playerBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.chibi1);
-        int playerHeight = (int) (this.getHeight() * 0.8);
+        int playerHeight = (int) (this.getHeight() * 0.82);
         player = new Player(this, playerBitmap, 0, playerHeight);
         setOnTouchListener(new Controller(player, getWidth()));
 
@@ -115,9 +120,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     public synchronized void draw(Canvas canvas) {
         super.draw(canvas);
         if (canvas != null) {
-            Paint paint = new Paint();
-            paint.setColor(Color.YELLOW);
-            canvas.drawRect(0, canvas.getHeight()-100, canvas.getWidth(), canvas.getHeight(), paint);
+            //Reset display for background
+            canvas.drawColor(0, PorterDuff.Mode.CLEAR);
+
             player.draw(canvas);
             for (Enemy enemy : enemies.keySet()) {
                 enemy.draw(canvas);
@@ -172,8 +177,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
 
     }
-
-
 
     public Player getPlayer(){
         return this.player;
