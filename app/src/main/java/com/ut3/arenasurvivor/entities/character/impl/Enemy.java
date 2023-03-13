@@ -27,7 +27,7 @@ public class Enemy extends Character {
         //Set firing attr
         this.reloadTimer = RELOAD_TIME;
         nbBullets = 5;
-        fireRate = 0.2f;
+        fireRate = 0.02f;
     }
 
     public void draw(Canvas canvas) {

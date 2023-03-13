@@ -35,6 +35,7 @@ public class GameThread extends Thread {
     @Override
     public void run() {
         long startTime = System.nanoTime();
+        long timePlayed;
         while (running) {
             try {
                 canvas = this.surfaceHolder.lockCanvas();
