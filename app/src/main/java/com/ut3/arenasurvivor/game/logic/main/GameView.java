@@ -70,7 +70,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         for (Projectile projectile : projectiles) {
             projectile.move();
         }
-        //spawner.update();
+        spawner.update();
 
 
         calculator.updateScore(startTime);
@@ -88,6 +88,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         Bitmap playerBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.chibi1);
         int playerHeight = (int) (this.getHeight() * 0.82);
         player = new Player(this, playerBitmap, 0, playerHeight);
+        player.move(1);
         setOnTouchListener(new Controller(player, getWidth()));
 
         //Thread Start

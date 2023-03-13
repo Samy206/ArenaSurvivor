@@ -45,19 +45,19 @@ public class Controller implements View.OnTouchListener {
                 break;
 
             case MotionEvent.ACTION_UP:
-                player.setCanMove(false);
                 x2 = motionEvent.getX();
                 float deltaX = x2 - x1;
 
-                if (Math.abs(deltaX) > MIN_DISTANCE )
+                if (Math.abs(deltaX) > MIN_DISTANCE)
                 {
                     Long now  = System.nanoTime();
                     // Code optimisation to avoid if & else if.
                     // Direction will be -1 (right to left dash) or 1 (left to right dash)
                     difference = (x2 - x1);
                     direction = (int) (difference / Math.abs(difference));
-                    if(now - lastDashTimer > dashDelay) {
+                    if( (now - lastDashTimer) > dashDelay) {
                         player.dash(direction);
+                        player.move(direction);
                         lastDashTimer = now;
                     }
                 }
