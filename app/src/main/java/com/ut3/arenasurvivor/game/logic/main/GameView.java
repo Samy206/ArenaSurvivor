@@ -1,4 +1,4 @@
-package com.ut3.arenasurvivor;
+package com.ut3.arenasurvivor.game.logic.main;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -7,52 +7,52 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Rect;
-import android.view.MotionEvent;
+
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import androidx.annotation.NonNull;
 
+import com.ut3.arenasurvivor.Controller;
+import com.ut3.arenasurvivor.game.logic.utils.EnemySpawner;
+import com.ut3.arenasurvivor.R;
+import com.ut3.arenasurvivor.activities.GameActivity;
 import com.ut3.arenasurvivor.entities.character.impl.Enemy;
 
-import com.ut3.arenasurvivor.activities.MainMenuActivity;
 import com.ut3.arenasurvivor.entities.character.impl.Player;
 import com.ut3.arenasurvivor.entities.impl.Projectile;
+import com.ut3.arenasurvivor.game.logic.utils.ScoreCalculator;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
+    private GameActivity gameActivity;
     private GameThread thread;
     private Long startTime;
     private SharedPreferences sharedPreferences;
     private Player player;
     private Map<Enemy, Integer> enemies;
-    private List<Projectile> projectiles;
+    private ArrayBlockingQueue<Projectile> projectiles;
 
+    private ScoreCalculator calculator;
     private EnemySpawner spawner;
 
-    // Variables for dash
-    private float x1,x2;
-    private final float MIN_DISTANCE = 150;
-
-    public GameView(Context context, SharedPreferences sharedPreferences) {
+    public GameView(Context context, SharedPreferences sharedPreferences, GameActivity gameActivity) {
         super(context);
         getHolder().addCallback(this);
         //Variables init
         //enemies = Collections.synchronizedList(new ArrayList<>());
         enemies = new ConcurrentHashMap<>();
-        projectiles = new ArrayList<>();
+        projectiles = new ArrayBlockingQueue<>(100);
         thread = new GameThread(getHolder(), this, sharedPreferences);
-
+        startTime = System.nanoTime();
+        this.gameActivity = gameActivity;
         Bitmap enemyBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.output_onlinepngtools);
         spawner = new EnemySpawner(this, enemyBitmap);
-
+        calculator = new ScoreCalculator(sharedPreferences);
         setFocusable(true);
     }
 
@@ -63,17 +63,28 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             enemy.update();
         }
         for (Projectile projectile : projectiles) {
-            projectile.move(5, 10);
+            projectile.move();
         }
         spawner.update();
+
+
+        calculator.updateScore(startTime);
+
+        detectCollision();
+
+        if(projectiles.size() > 50){
+            projectiles.poll();
+        }
     }
 
     @Override
     public void surfaceCreated(@NonNull SurfaceHolder holder) {
         //Entities init
         Bitmap playerBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.chibi1);
-        player = new Player(this, playerBitmap, 0, 700);
-        player.setMovingVector(10,0);
+        int playerHeight = (int) (this.getHeight() * 0.8);
+        player = new Player(this, playerBitmap, 0, playerHeight);
+        setOnTouchListener(new Controller(player, getWidth()));
+
         //Thread Start
         thread = new GameThread(getHolder(), this, sharedPreferences);
 
@@ -118,8 +129,16 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void createProjectileAt(int x, int y) {
-        Projectile newProjectile = new Projectile("projectile" + projectiles.size(), new Rect(x, y, x + 10, y + 10));
+        Projectile newProjectile = new Projectile("projectile" + projectiles.size(), x, y, getPlayerX(), getPlayerY());
         projectiles.add(newProjectile);
+    }
+
+    private int getPlayerY() {
+        return player.getY();
+    }
+
+    private int getPlayerX() {
+        return player.getX();
     }
 
     public void destroyEnemy(Enemy enemy) {
@@ -130,57 +149,34 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         enemies.put(enemy, enemies.size());
     }
 
-    public int getPlayerX(){
-        return this.player.getX();
+    public void endGame() {
+        this.projectiles.clear();
+        this.enemies.clear();
     }
 
-    public int getPlayerY(){
-        return this.player.getY();
-    }
+    private void detectCollision() {
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event){
-
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                x1 = event.getX();
-                break;
-            case MotionEvent.ACTION_MOVE:
-                float xMove = event.getX();
-                if(xMove <= this.getWidth()/2){
-                    this.player.move(-1);
-                }else{
-                    this.player.move(1);
+        for(Projectile projectile : projectiles) {
+            if(projectile.detectCollision(player.getHitBox())) {
+                try {
+                    endGame();
+                    thread.setRunning(false);
+                    this.gameActivity.returnToMenuActivity();
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
                 }
                 break;
-            case MotionEvent.ACTION_UP:
-                x2 = event.getX();
-                float deltaX = x2 - x1;
-
-                if (Math.abs(deltaX) > MIN_DISTANCE)
-                {
-                    // Left to Right swipe action
-                    if (x2 > x1)
-                    {
-                        //Toast.makeText(this, "Left to Right swipe [Next]", Toast.LENGTH_SHORT).show ();
-                        player.dash(1);
-                        player.setMovingVector(10, 0);
-                    }
-
-                    // Right to left swipe action
-                    else
-                    {
-                        //Toast.makeText(this, "Right to Left swipe [Previous]", Toast.LENGTH_SHORT).show ();
-                        player.dash(-1);
-                        player.setMovingVector(-10, 0);
-                    }
-
-                }
-                break;
+            }
         }
 
 
-        return true;
+    }
+
+
+
+    public Player getPlayer(){
+        return this.player;
     }
 
 
