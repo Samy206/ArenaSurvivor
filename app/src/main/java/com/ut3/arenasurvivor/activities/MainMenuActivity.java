@@ -1,6 +1,7 @@
 package com.ut3.arenasurvivor.activities;
 
 import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -19,6 +20,7 @@ public class MainMenuActivity extends AppCompatActivity {
 
     public void startGameActivity(View view) {
         Intent intent = new Intent(this, GameActivity.class);
+
         startActivity(intent);
     }
 
