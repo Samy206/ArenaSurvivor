@@ -88,7 +88,6 @@ public class Player extends Character {
     }
 
     public void update() {
-        this.jump();
         if(canMove){
             this.colUsing = (this.colUsing + 1) % this.colCount;
             //Change nanoseconds to milliseconds (1 nanosecond = 1000000 milliseconds)
@@ -117,14 +116,12 @@ public class Player extends Character {
             }
         }
 
-        this.canJump = (this.x == this.initialGroundYPosition);
+        this.canJump = (this.y == this.initialGroundYPosition);
 
         if(jumping){
-            if(this.y <= 400){
+            if(this.y <= jumpingTreshold){
                 jumpingDirection = jumpingDirection*-1f;
             }
-
-
 
             this.y += JUMP_VELOCITY*jumpingDirection;
 
