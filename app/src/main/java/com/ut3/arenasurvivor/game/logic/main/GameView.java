@@ -80,6 +80,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         if(projectiles.size() > 50){
             projectiles.poll();
         }
+
+        Log.d("TAG", "update amplitude: " + gameActivity.getAmplitude());
     }
 
     @Override
