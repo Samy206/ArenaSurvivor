@@ -12,21 +12,17 @@ import android.hardware.SensorManager;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.PixelFormat;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.MotionEvent;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.ut3.arenasurvivor.R;
 import com.ut3.arenasurvivor.game.logic.main.GameView;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.ut3.arenasurvivor.Controller;
@@ -45,8 +41,19 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
         initGameView();
 
         setContentView(createRootPanel());
+
+        setupActionBar();
         sm = (SensorManager) getSystemService(SENSOR_SERVICE);
     }
+
+    private void setupActionBar(){
+        ActionBar actionBar = getSupportActionBar();
+
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        actionBar.setCustomView(R.layout.activity_game_action_bar);
+
+    }
+
 
     private void initGameView(){
         SharedPreferences sharedPreferences = getSharedPreferences(MainMenuActivity.SHARED_PREF, MODE_PRIVATE);

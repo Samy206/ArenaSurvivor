@@ -5,8 +5,6 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
@@ -14,7 +12,7 @@ import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
@@ -26,7 +24,6 @@ import com.ut3.arenasurvivor.R;
 import com.ut3.arenasurvivor.activities.GameActivity;
 import com.ut3.arenasurvivor.entities.character.impl.Enemy;
 
-import com.ut3.arenasurvivor.activities.MainMenuActivity;
 import com.ut3.arenasurvivor.entities.character.impl.Player;
 import com.ut3.arenasurvivor.entities.impl.Projectile;
 import com.ut3.arenasurvivor.game.logic.utils.PlatformsSpawner;
@@ -50,6 +47,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private ScoreCalculator calculator;
     private EnemySpawner spawner;
     private PlatformsSpawner platformsSpawner;
+
+    private TextView currentScore;
 
     public GameView(Context context, SharedPreferences sharedPreferences, GameActivity gameActivity) {
         super(context);
@@ -80,22 +79,31 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     public void update() {
 
         this.player.update();
+
         for (Enemy enemy : enemies.keySet()) {
             enemy.update();
         }
         for (Projectile projectile : projectiles) {
             projectile.move();
         }
+
         spawner.update();
 
-
+        //Score update
+        gameActivity.runOnUiThread(() -> {
+            String score = "Score actuel :" + String.valueOf(calculator.calculateScore(startTime));
+            currentScore.setText(score);
+        });
         calculator.updateScore(startTime);
 
+        //Collision
         detectCollision();
 
+        //Delete the old projectiles
         if(projectiles.size() > 50){
             projectiles.poll();
         }
+
     }
 
     @Override
@@ -109,6 +117,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         player.move(1);
         setOnTouchListener(new Controller(player, getWidth()));
 
+
+        //Init currentScore textView
+        currentScore = gameActivity.getSupportActionBar().getCustomView().findViewById(R.id.currentScore);
+
         //Thread Start
         thread = new GameThread(getHolder(), this, sharedPreferences);
 
@@ -118,6 +130,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceChanged(@NonNull SurfaceHolder holder, int format, int width, int height) {
+
 
     }
 
@@ -154,6 +167,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             }
         }
     }
+
+
 
     public void createProjectileAt(int x, int y) {
         Projectile newProjectile = new Projectile("projectile" + projectiles.size(), x, y, getPlayerX(), getPlayerY());

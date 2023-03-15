@@ -13,10 +13,13 @@ public class ScoreCalculator {
         this.sharedPreferences = sharedPreferences;
     }
 
-    public void updateScore(Long startTime) {
-
+    public long calculateScore(Long startTime){
         long timePlayed = System.nanoTime() - startTime;
-        long score = (long) (timePlayed / timeOffset);
+        return (long) (timePlayed / timeOffset);
+    }
+
+    public void updateScore(Long startTime) {
+        long score = calculateScore(startTime);
         long previousMaxScore = sharedPreferences.getLong(MainMenuActivity.SHARED_PREF, 0);
 
         if(score > previousMaxScore) {
