@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.util.Log;
 
 import com.ut3.arenasurvivor.game.logic.main.GameView;
 import com.ut3.arenasurvivor.entities.character.Character;
@@ -15,6 +16,8 @@ public class Player extends Character {
     private static final int ROW_RIGHT_TO_LEFT = 1;
     private static final int ROW_LEFT_TO_RIGHT = 2;
     private static final int ROW_BOTTOM_TO_TOP = 3;
+
+    private int initialGroundYPosition;
 
     // The thickness of the gound object so the player wont drown
     private final int groundThickness = 100;
@@ -33,7 +36,9 @@ public class Player extends Character {
     private int comfortWidth;
 
     public static final float VELOCITY = 0.4f;
+    public static final float JUMP_VELOCITY = 7f;
 
+    private boolean canMove = false;
 
     private int direction = 0;
 
@@ -41,9 +46,18 @@ public class Player extends Character {
 
     private GameView gameView;
 
+    private boolean canJump = true;
+    private boolean jumping;
+    private float jumpingDirection = -1f;
+
+    //jumping stops at y = jumpingTreshold
+    private final int jumpingTreshold = 400;
+
+
     public Player(GameView gameView, Bitmap image, int x, int y) {
         super(image, 4, 3, x, y);
         this.gameView = gameView;
+        this.initialGroundYPosition = y;
 
         this.topToBottoms = new Bitmap[colCount]; //3
         this.rightToLefts = new Bitmap[colCount]; //3
@@ -99,6 +113,8 @@ public class Player extends Character {
 
         //Calculate the new position of the game character
         movePlayer(offsetX);
+        this.hitBox.offset(offsetX, 0);
+
 
         if (this.direction > 0) {
             this.rowUsing = ROW_LEFT_TO_RIGHT;
@@ -106,6 +122,23 @@ public class Player extends Character {
             this.rowUsing = ROW_RIGHT_TO_LEFT;
         }
 
+        this.canJump = (this.y == this.initialGroundYPosition);
+
+        if(jumping){
+            if(this.y <= jumpingTreshold){
+                jumpingDirection = jumpingDirection*-1f;
+            }
+
+            int offsetY = (int) (JUMP_VELOCITY * jumpingDirection);
+            this.y += offsetY;
+            this.hitBox.offset(0, offsetY);
+
+            if(this.y == initialGroundYPosition){
+                this.jumping = false;
+                this.canJump = true;
+                this.jumpingDirection = -1;
+            }
+        }
     }
 
     public void draw(Canvas canvas) {
@@ -146,8 +179,19 @@ public class Player extends Character {
             this.x = testNegativeValue;
             this.hitBox.offset(offsetX, 0);
         }
-
     }
+
+    public void jump() {
+        if(this.canJump){
+            this.jumping = true;
+            this.canJump = false;
+        }
+    }
+
+    public void setCanMove(boolean canMove) {
+        this.canMove = canMove;
+    }
+
 
     /**
      * Dash into a direction given by parameter, -1 being tot the left and 1 to the right
