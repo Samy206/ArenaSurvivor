@@ -2,14 +2,17 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="horizontal">
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:clickable="true"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:padding="@dimen/cardview_default_radius"
         android:textColor="@color/black"
-        android:textSize="20sp"
-        android:padding="@dimen/cardview_default_radius"/>
+        android:textSize="20sp" />
 </LinearLayout>
