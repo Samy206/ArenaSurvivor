@@ -17,6 +17,8 @@ public class Player extends Character {
     private static final int ROW_LEFT_TO_RIGHT = 2;
     private static final int ROW_BOTTOM_TO_TOP = 3;
 
+    private int initialGroundYPosition;
+
     // The thickness of the gound object so the player wont drown
     private final int groundThickness = 100;
 
@@ -32,6 +34,7 @@ public class Player extends Character {
     private Rect hitBox;
 
     public static final float VELOCITY = 0.4f;
+    public static final float JUMP_VELOCITY = 7f;
 
     private boolean canMove = false;
 
@@ -41,9 +44,18 @@ public class Player extends Character {
 
     private GameView gameView;
 
+    private boolean canJump = true;
+    private boolean jumping;
+    private float jumpingDirection = -1f;
+
+    //jumping stops at y = jumpingTreshold
+    private final int jumpingTreshold = 400;
+
+
     public Player(GameView gameView, Bitmap image, int x, int y) {
         super(image, 4, 3, x, y);
         this.gameView = gameView;
+        this.initialGroundYPosition = y;
 
         this.topToBottoms = new Bitmap[colCount]; //3
         this.rightToLefts = new Bitmap[colCount]; //3
@@ -105,6 +117,8 @@ public class Player extends Character {
             //Calculate the new position of the game character
             this.x = x + offset;
 
+
+
             if(this.direction > 0){
                 this.rowUsing = ROW_LEFT_TO_RIGHT;
             }else{
@@ -112,6 +126,22 @@ public class Player extends Character {
             }
             this.hitBox.offset(offset, 0);
 
+        }
+
+        this.canJump = (this.y == this.initialGroundYPosition);
+
+        if(jumping){
+            if(this.y <= jumpingTreshold){
+                jumpingDirection = jumpingDirection*-1f;
+            }
+
+            this.y += JUMP_VELOCITY*jumpingDirection;
+
+            if(this.y == initialGroundYPosition){
+                this.jumping = false;
+                this.canJump = true;
+                this.jumpingDirection = -1;
+            }
         }
     }
 
@@ -135,6 +165,13 @@ public class Player extends Character {
     public void move(int direction) {
         this.direction = direction;
         this.setCanMove(true);
+    }
+
+    public void jump() {
+        if(this.canJump){
+            this.jumping = true;
+            this.canJump = false;
+        }
     }
 
     public void setCanMove(boolean canMove) {
