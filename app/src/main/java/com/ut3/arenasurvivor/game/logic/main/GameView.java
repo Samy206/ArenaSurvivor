@@ -18,6 +18,7 @@ import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 
+import com.ut3.arenasurvivor.Controller;
 import com.ut3.arenasurvivor.entities.impl.Platform;
 import com.ut3.arenasurvivor.game.logic.main.GameThread;
 import com.ut3.arenasurvivor.game.logic.utils.EnemySpawner;
@@ -105,6 +106,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         player = new Player(this, playerBitmap, 0, playerHeight);
         platformsSpawner = new PlatformsSpawner(this.getWidth(), this.getHeight());
         createPlatforms();
+        player.move(1);
+        setOnTouchListener(new Controller(player, getWidth()));
+
         //Thread Start
         thread = new GameThread(getHolder(), this, sharedPreferences);
 

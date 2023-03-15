@@ -17,7 +17,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -54,9 +53,6 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
         gameView = new GameView(this, sharedPreferences, this);
         gameView.setZOrderOnTop(true);
         gameView.getHolder().setFormat(PixelFormat.TRANSPARENT);
-        gameView.setOnTouchListener(new Controller());
-
-
     }
 
 
@@ -117,6 +113,5 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
         Intent intent = new Intent(this, MainMenuActivity.class);
         startActivity(intent);
     }
-
 
 }
