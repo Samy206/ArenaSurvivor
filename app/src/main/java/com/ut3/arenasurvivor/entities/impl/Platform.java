@@ -1,5 +1,8 @@
 package com.ut3.arenasurvivor.entities.impl;
 
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Rect;
 
 import com.ut3.arenasurvivor.entities.Collidable;
@@ -23,6 +26,12 @@ public class Platform implements Collidable {
     @Override
     public boolean detectCollision(Rect dangerHitBox) {
         return (dangerHitBox != null) && hitBox.intersect(dangerHitBox);
+    }
+
+    public void draw (Canvas canvas) {
+        Paint paint = new Paint();
+        paint.setColor(Color.BLUE);
+        canvas.drawRect(hitBox, paint);
     }
 
 }
