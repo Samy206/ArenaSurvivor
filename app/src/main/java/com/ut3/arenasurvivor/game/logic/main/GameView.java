@@ -5,29 +5,31 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.PorterDuff;
+import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
+import com.ut3.arenasurvivor.Controller;
+import com.ut3.arenasurvivor.entities.impl.Platform;
 import com.ut3.arenasurvivor.game.logic.main.GameThread;
 import com.ut3.arenasurvivor.game.logic.utils.EnemySpawner;
 import com.ut3.arenasurvivor.R;
 import com.ut3.arenasurvivor.activities.GameActivity;
 import com.ut3.arenasurvivor.entities.character.impl.Enemy;
 
-import com.ut3.arenasurvivor.activities.MainMenuActivity;
 import com.ut3.arenasurvivor.entities.character.impl.Player;
 import com.ut3.arenasurvivor.entities.impl.Projectile;
+import com.ut3.arenasurvivor.game.logic.utils.PlatformsSpawner;
 import com.ut3.arenasurvivor.game.logic.utils.ScoreCalculator;
 
+import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
@@ -41,9 +43,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private Player player;
     private Map<Enemy, Integer> enemies;
     private ArrayBlockingQueue<Projectile> projectiles;
-
+    private ArrayBlockingQueue<Platform> platforms;
     private ScoreCalculator calculator;
     private EnemySpawner spawner;
+    private PlatformsSpawner platformsSpawner;
+
+    private TextView currentScore;
 
     private final double CRY_AMPLITUDE = 10000;
 
@@ -53,8 +58,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         //Variables init
         enemies = new ConcurrentHashMap<>();
         projectiles = new ArrayBlockingQueue<>(100);
+        platforms = new ArrayBlockingQueue<>(3);
         thread = new GameThread(getHolder(), this, sharedPreferences);
         startTime = System.nanoTime();
+
         this.gameActivity = gameActivity;
         Bitmap enemyBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.output_onlinepngtools);
         spawner = new EnemySpawner(this, enemyBitmap);
@@ -63,22 +70,38 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     }
 
+    public void createPlatforms() {
+
+        for(int i = 0; i < 3; i++) {
+            platforms.add(platformsSpawner.createPlatformWithRandomPos());
+        }
+
+    }
+
     public void update() {
 
         this.player.update();
+
         for (Enemy enemy : enemies.keySet()) {
             enemy.update();
         }
         for (Projectile projectile : projectiles) {
             projectile.move();
         }
+
         spawner.update();
 
-
+        //Score update
+        gameActivity.runOnUiThread(() -> {
+            String score = "Score actuel :" + String.valueOf(calculator.calculateScore(startTime));
+            currentScore.setText(score);
+        });
         calculator.updateScore(startTime);
 
+        //Collision
         detectCollision();
 
+        //Delete the old projectiles
         if(projectiles.size() > 50){
             projectiles.poll();
         }
@@ -88,6 +111,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             this.endGame();
         }
 
+
     }
 
     @Override
@@ -96,7 +120,15 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         Bitmap playerBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.chibi1);
         int playerHeight = (int) (this.getHeight() * 0.82);
         player = new Player(this, playerBitmap, 0, playerHeight);
-        
+        platformsSpawner = new PlatformsSpawner(this.getWidth(), this.getHeight());
+        createPlatforms();
+        player.move(1);
+        setOnTouchListener(new Controller(player, getWidth()));
+
+
+        //Init currentScore textView
+        currentScore = gameActivity.getSupportActionBar().getCustomView().findViewById(R.id.currentScore);
+
         //Thread Start
         thread = new GameThread(getHolder(), this, sharedPreferences);
 
@@ -106,6 +138,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceChanged(@NonNull SurfaceHolder holder, int format, int width, int height) {
+
 
     }
 
@@ -137,8 +170,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             for (Projectile projectile : projectiles) {
                 projectile.draw(canvas);
             }
+            for (Platform platform : platforms) {
+                platform.draw(canvas);
+            }
         }
     }
+
+
 
     public void createProjectileAt(int x, int y) {
         Projectile newProjectile = new Projectile("projectile" + projectiles.size(), x, y, getPlayerX(), getPlayerY());
@@ -169,6 +207,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private void detectCollision() {
 
         for(Projectile projectile : projectiles) {
+
+            for(Platform platform : platforms) {
+                if (projectile.detectCollision(platform.getHitBox())) {
+                    projectiles.remove(projectile);
+                }
+            }
+
             if(projectile.detectCollision(player.getHitBox())) {
                 try {
                     endGame();
