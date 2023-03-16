@@ -1,6 +1,5 @@
 # Projet Arena Survivor :
 
-
 Pour lancer l'application:
 - Utiliser un appareil android avec une version API = 30 comportant un accéléromètre et un microphone
 - Les instructions de jeu sont sur le menu
@@ -14,7 +13,7 @@ Fonctionnalités de l'application:
     - Saut : Se fait via l'accéléromètre de la tablette en la "remuant"
 - Autre controle :
     - Un cri suffisament fort peut vider l'écran de ses ennemis et projectiles !
-    -
+
 Auteurs:
 - Eslam HUMAID
 - Samy BOUMALI
