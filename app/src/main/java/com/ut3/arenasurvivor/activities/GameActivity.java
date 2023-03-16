@@ -98,7 +98,9 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
 
         if (mRecorder == null) {
 
+
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
+
 
 
                 //Creating file
