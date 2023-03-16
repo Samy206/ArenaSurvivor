@@ -21,7 +21,7 @@ public class EnemySpawner {
     private int windowHeight;
     private int lowestSpawnHeight;
 
-    private final int WAIT_TIME = 500;
+    private final int WAIT_TIME = 1000;
     private int waitTimer;
 
     private long lastUpdateCall = -1;

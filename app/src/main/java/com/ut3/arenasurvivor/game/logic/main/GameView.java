@@ -110,11 +110,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
      if(!cryUsed) {
         double amplitude = gameActivity.getAmplitude();
-        if(amplitude > SCREAM_AMPLITUDE){
-            this.clearGame();
-            this.cryUsed = true;
-        }
-        
+            if(amplitude > SCREAM_AMPLITUDE){
+                this.clearGame();
+                this.cryUsed = true;
+            }
         }
 
     }

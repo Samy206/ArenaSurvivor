@@ -16,7 +16,7 @@ public class Enemy extends Character {
     //Attr to store current timer of reload
     private float reloadTimer;
     //Firerate of enemy
-    private final float FIRE_RATE = 0.02f;
+    private final float FIRE_RATE = 0.2f;
 
     private long lastShotTime = -1;
     private int nbBullets;

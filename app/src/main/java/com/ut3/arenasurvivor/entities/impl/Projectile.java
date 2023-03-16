@@ -28,7 +28,7 @@ public class Projectile implements Collidable, Movable {
     private final int playerY;
     private long lastDrawNanoTime = -1;
 
-    private final double SPEED = 2.5;
+    private final double SPEED = 4.0;
 
     public Projectile(String name, int x, int y, int playerX, int playerY) {
         componentName = name;
