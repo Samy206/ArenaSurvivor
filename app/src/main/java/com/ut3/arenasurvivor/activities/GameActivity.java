@@ -98,17 +98,10 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
 
         if (mRecorder == null) {
 
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-                Log.d(TAG, "onResume: persmission requested");
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, RECORD_AUDIO);
 
-            } else {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
 
-                if (!Environment.isExternalStorageManager()){
-                    Intent getpermission = new Intent();
-                    getpermission.setAction(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
-                    startActivity(getpermission);
-                }
+
 
                 //Creating file
                 File dir = Environment.getExternalStorageDirectory();
