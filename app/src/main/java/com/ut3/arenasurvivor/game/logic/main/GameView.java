@@ -45,6 +45,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private ScoreCalculator calculator;
     private EnemySpawner spawner;
 
+    private final double CRY_AMPLITUDE = 10000;
+
     public GameView(Context context, SharedPreferences sharedPreferences, GameActivity gameActivity) {
         super(context);
         getHolder().addCallback(this);
@@ -81,7 +83,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             projectiles.poll();
         }
 
-        Log.d("TAG", "update amplitude: " + gameActivity.getAmplitude());
+        double amplitude = gameActivity.getAmplitude();
+        if(amplitude > CRY_AMPLITUDE){
+            this.endGame();
+        }
+
     }
 
     @Override

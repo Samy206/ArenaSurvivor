@@ -25,6 +25,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.PowerManager;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -92,13 +93,18 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
 
             } else {
 
+                if (!Environment.isExternalStorageManager()){
+                    Intent getpermission = new Intent();
+                    getpermission.setAction(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
+                    startActivity(getpermission);
+                }
 
                 //Creating file
                 File dir = Environment.getExternalStorageDirectory();
                 try {
                     audiofile = File.createTempFile("sound", ".3gp", dir);
                 } catch (IOException e) {
-                    Log.e(TAG, "external storage access error");
+                    Log.e(TAG, e.getMessage());
                     return;
                 }
 
