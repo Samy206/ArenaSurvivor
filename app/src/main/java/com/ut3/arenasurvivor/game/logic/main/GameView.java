@@ -12,6 +12,7 @@ import android.view.SurfaceView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 
 import com.ut3.arenasurvivor.Controller;
 import com.ut3.arenasurvivor.entities.impl.Platform;
@@ -30,7 +31,6 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
-
     private final GameActivity gameActivity;
     private final SharedPreferences sharedPreferences;
     private final Map<Enemy, Integer> enemies;
@@ -135,7 +135,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         createPlatforms();
 
         //Init currentScore textView
-        currentScore = gameActivity.getSupportActionBar().getCustomView().findViewById(R.id.currentScore);
+        ActionBar actionBar = gameActivity.getSupportActionBar();
+        if(actionBar != null){
+            currentScore = actionBar.getCustomView().findViewById(R.id.currentScore);
+        }
 
         //Init enemy spawner
         Bitmap enemyBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.enemy);
@@ -199,7 +202,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
 
     public void createProjectileAt(int x, int y) {
-        Projectile newProjectile = new Projectile("projectile" + projectiles.size(), x, y, getPlayerX(), getPlayerY());
+        Projectile newProjectile = new Projectile(x, y, getPlayerX(), getPlayerY());
         projectiles.add(newProjectile);
     }
 

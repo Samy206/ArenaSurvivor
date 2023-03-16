@@ -127,7 +127,7 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
         synchronized (this) {
             if (sensor == Sensor.TYPE_LINEAR_ACCELERATION) {
 
-                if(values[2] > 10){
+                if(values[2] > 5){
                     gameView.getPlayer().jump();
                 }
             }
@@ -154,7 +154,7 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
         bgImagePanel.setBackgroundResource(R.drawable.background);
 
         // Use a RelativeLayout to overlap both SurfaceView and ImageView
-        RelativeLayout.LayoutParams fillParentLayout = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT, RelativeLayout.LayoutParams.FILL_PARENT);
+        RelativeLayout.LayoutParams fillParentLayout = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
         RelativeLayout rootPanel = new RelativeLayout(this);
 
         rootPanel.setLayoutParams(fillParentLayout);

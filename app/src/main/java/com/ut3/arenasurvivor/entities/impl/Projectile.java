@@ -4,18 +4,14 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.util.Log;
 
 import com.ut3.arenasurvivor.entities.Collidable;
 import com.ut3.arenasurvivor.entities.Movable;
 
-import java.util.logging.Logger;
 
 public class Projectile implements Collidable, Movable {
 
     public Rect hitBox;
-    private final Logger LOGGER;
-    private final String componentName;
 
     private final int SIZE = 10 ;
 
@@ -30,14 +26,12 @@ public class Projectile implements Collidable, Movable {
 
     private final double SPEED = 4.0;
 
-    public Projectile(String name, int x, int y, int playerX, int playerY) {
-        componentName = name;
+    public Projectile(int x, int y, int playerX, int playerY) {
         hitBox = new Rect(x, y, x + SIZE, y + SIZE);
         this.x = x;
         this.y = y;
         this.playerX = playerX;
         this.playerY = playerY;
-        LOGGER = Logger.getLogger(componentName);
     }
 
     public void setHitbox(Rect hitBox) {
