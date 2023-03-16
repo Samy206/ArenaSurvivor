@@ -34,7 +34,7 @@ public class MainMenuActivity extends AppCompatActivity {
     private ListView listControl;
 
     String[] controlList = {"Appuyez à gauche ou à droite du personnage pour changer de direction",
-            "Swipez (Rester appuyer et relâcher plus loin ) pour faire dasher le personnage !",
+            "Swipez (Rester appuyer et relâcher plus loin) pour faire dasher le personnage !",
             "Vous avez le droit de crier une fois pour tuer tous les ennemis et projectiles !",
             "Survivez le plus longtemps possible :)"};
 

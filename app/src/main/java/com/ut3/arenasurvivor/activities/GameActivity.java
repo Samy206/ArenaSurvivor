@@ -22,6 +22,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.ut3.arenasurvivor.R;
+import com.ut3.arenasurvivor.entities.character.impl.Player;
 import com.ut3.arenasurvivor.game.logic.main.GameView;
 
 import java.io.File;
@@ -126,9 +127,9 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
         float[] values = sensorEvent.values;
         synchronized (this) {
             if (sensor == Sensor.TYPE_LINEAR_ACCELERATION) {
-
-                if(values[2] > 5){
-                    gameView.getPlayer().jump();
+                Player player = gameView.getPlayer();
+                if(values[2] > 5 && player != null){
+                    player.jump();
                 }
             }
         }

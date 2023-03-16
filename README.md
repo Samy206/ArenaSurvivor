@@ -12,7 +12,7 @@
     - Changement de direction : Se fait par un appuie sur l'écran à gauche ou à droite du joueur
     - Saut : Se fait via **l'accéléromètre** de la tablette en la "remuant"
 - Autre contrôle :
-    - Joker : Se fait via le **microphone**, un cri assez fort peut vider l'écran de ses ennemis et projectiles !
+    - Joker : Se fait via le **microphone**, un cri assez fort peut vider l'écran de ses ennemis et projectiles ! Limité à une seule utilisation
 
 ## Auteurs:
 - Eslam HUMAID
