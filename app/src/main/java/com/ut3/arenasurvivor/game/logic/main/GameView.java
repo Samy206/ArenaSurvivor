@@ -50,6 +50,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     private TextView currentScore;
 
+    private Boolean cryUsed = false;
+
     private final double CRY_AMPLITUDE = 10000;
 
     public GameView(Context context, SharedPreferences sharedPreferences, GameActivity gameActivity) {
@@ -61,6 +63,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         platforms = new ArrayBlockingQueue<>(3);
         thread = new GameThread(getHolder(), this, sharedPreferences);
         startTime = System.nanoTime();
+
 
         this.gameActivity = gameActivity;
         Bitmap enemyBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.output_onlinepngtools);
@@ -106,9 +109,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             projectiles.poll();
         }
 
-        double amplitude = gameActivity.getAmplitude();
-        if(amplitude > CRY_AMPLITUDE){
-            this.endGame();
+
+        if(!cryUsed) {
+            double amplitude = gameActivity.getAmplitude();
+            if (amplitude > CRY_AMPLITUDE) {
+                this.endGame();
+                this.cryUsed = true;
+            }
         }
 
 
