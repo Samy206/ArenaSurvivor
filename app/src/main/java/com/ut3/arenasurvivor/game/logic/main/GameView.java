@@ -50,6 +50,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     private TextView currentScore;
 
+    private final double CRY_AMPLITUDE = 10000;
+
     public GameView(Context context, SharedPreferences sharedPreferences, GameActivity gameActivity) {
         super(context);
         getHolder().addCallback(this);
@@ -103,6 +105,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         if(projectiles.size() > 50){
             projectiles.poll();
         }
+
+        double amplitude = gameActivity.getAmplitude();
+        if(amplitude > CRY_AMPLITUDE){
+            this.endGame();
+        }
+
 
     }
 
