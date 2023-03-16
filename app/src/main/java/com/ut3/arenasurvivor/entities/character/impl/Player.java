@@ -33,6 +33,8 @@ public class Player extends Character {
     private Bitmap[] bottomToTops;
     private Rect hitBox;
 
+    private int comfortWidth;
+
     public static final float VELOCITY = 0.4f;
     public static final float JUMP_VELOCITY = 7f;
 
@@ -68,12 +70,8 @@ public class Player extends Character {
             this.leftToRights[col] = this.createSubImageAt(ROW_LEFT_TO_RIGHT, col);
             this.bottomToTops[col] = this.createSubImageAt(ROW_BOTTOM_TO_TOP, col);
         }
-
-        this.hitBox = new Rect(x ,
-                        y ,
-                        x + this.width ,
-                        y + this.height
-                    );
+        comfortWidth = this.gameView.getWidth() - this.width;
+        this.hitBox = new Rect(x, y, x + this.width, y + this.height);
     }
 
     public Bitmap[] getMoveBitmaps() {
@@ -97,35 +95,31 @@ public class Player extends Character {
     }
 
     public void update() {
-        if(canMove){
-            this.colUsing = (this.colUsing + 1) % this.colCount;
-            //Change nanoseconds to milliseconds (1 nanosecond = 1000000 milliseconds)
-            //Current time in nanoseconds
-            long now = System.nanoTime();
+        this.colUsing = (this.colUsing + 1) % this.colCount;
+        //Change nanoseconds to milliseconds (1 nanosecond = 1000000 milliseconds)
+        //Current time in nanoseconds
+        long now = System.nanoTime();
 
-            //Never once did draw
-            if (lastDrawNanoTime == -1) {
-                lastDrawNanoTime = now;
-            }
+        //Never once did draw
+        if (lastDrawNanoTime == -1) {
+            lastDrawNanoTime = now;
+        }
 
-            int deltaTime = (int) ((now - lastDrawNanoTime) / 1000000);
+        int deltaTime = (int) ((now - lastDrawNanoTime) / 1000000);
 
-            //Distance moves
-            float distance = VELOCITY * deltaTime;
-            int offset = (int) (direction * distance);
+        //Distance moves
+        float distance = VELOCITY * deltaTime;
+        int offsetX = (int) (direction * distance);
 
-            //Calculate the new position of the game character
-            this.x = x + offset;
+        //Calculate the new position of the game character
+        movePlayer(offsetX);
+        this.hitBox.offset(offsetX, 0);
 
 
-
-            if(this.direction > 0){
-                this.rowUsing = ROW_LEFT_TO_RIGHT;
-            }else{
-                this.rowUsing = ROW_RIGHT_TO_LEFT;
-            }
-            this.hitBox.offset(offset, 0);
-
+        if (this.direction > 0) {
+            this.rowUsing = ROW_LEFT_TO_RIGHT;
+        } else {
+            this.rowUsing = ROW_RIGHT_TO_LEFT;
         }
 
         this.canJump = (this.y == this.initialGroundYPosition);
@@ -135,7 +129,9 @@ public class Player extends Character {
                 jumpingDirection = jumpingDirection*-1f;
             }
 
-            this.y += JUMP_VELOCITY*jumpingDirection;
+            int offsetY = (int) (JUMP_VELOCITY * jumpingDirection);
+            this.y += offsetY;
+            this.hitBox.offset(0, offsetY);
 
             if(this.y == initialGroundYPosition){
                 this.jumping = false;
@@ -148,6 +144,7 @@ public class Player extends Character {
     public void draw(Canvas canvas) {
         Bitmap bitmap = this.getCurrentMoveBitmap();
         canvas.drawBitmap(bitmap, x, y, null);
+
         //Last draw Time
         this.lastDrawNanoTime = System.nanoTime();
     }
@@ -164,7 +161,24 @@ public class Player extends Character {
 
     public void move(int direction) {
         this.direction = direction;
-        this.setCanMove(true);
+    }
+
+
+    public void movePlayer(int offsetX) {
+        int testNegativeValue = this.hitBox.left + offsetX;
+        int testGreaterValue = this.hitBox.right + offsetX;
+        if (testNegativeValue < 0) {
+            this.x = 0;
+            this.hitBox.left = x;
+            this.hitBox.right = x + this.width;
+        } else if (testGreaterValue >= this.gameView.getWidth()) {
+            this.x = comfortWidth;
+            this.hitBox.left = x;
+            this.hitBox.right = x + this.width;
+        } else {
+            this.x = testNegativeValue;
+            this.hitBox.offset(offsetX, 0);
+        }
     }
 
     public void jump() {
@@ -179,4 +193,12 @@ public class Player extends Character {
     }
 
 
+    /**
+     * Dash into a direction given by parameter, -1 being tot the left and 1 to the right
+     */
+    public void dash(int direction) {
+        //Calculate the new position of the game character
+        int offsetX = (int) (direction * VELOCITY * 1000);
+        movePlayer(offsetX);
+    }
 }

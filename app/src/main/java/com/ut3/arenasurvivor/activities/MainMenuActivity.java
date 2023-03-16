@@ -4,6 +4,7 @@ import static androidx.constraintlayout.widget.StateSet.TAG;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -13,6 +14,8 @@ import android.os.Environment;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,8 +31,13 @@ public class MainMenuActivity extends AppCompatActivity {
     public Long scoreMax;
     private TextView scoreView;
 
+    private ListView listControl;
+
+    String controlList[] = {"Appuyez à gauche ou à droite du personnage pour changer de direction ", "Swipez (Rester appuyer et relâcher plus loin ) pour faire dasher le personnage !", "Survivez le plus longtemps possible :)"};
+
     public void startGameActivity(View view) {
         Intent intent = new Intent(this, GameActivity.class);
+
         startActivity(intent);
     }
 
@@ -45,6 +53,7 @@ public class MainMenuActivity extends AppCompatActivity {
         scoreView = findViewById(R.id.Score);
         scoreView.setText("Meilleur score : " + scoreMax);
 
+
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
             Log.d(TAG, "onResume: persmission granted== requested");
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, RECORD_AUDIO);
@@ -56,6 +65,11 @@ public class MainMenuActivity extends AppCompatActivity {
             getPermission.setAction(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
             startActivity(getPermission);
         }
+
+
+        listControl = (ListView) findViewById(R.id.listControl);
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, R.layout.listcontrolview, R.id.textView, controlList);
+        listControl.setAdapter(arrayAdapter);
 
     }
 
