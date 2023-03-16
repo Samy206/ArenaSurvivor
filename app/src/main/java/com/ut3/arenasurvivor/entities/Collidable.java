@@ -5,6 +5,6 @@ import java.util.logging.Logger;
 
 public interface Collidable {
 
-    public boolean detectCollision(Rect dangerHitBox);
+    boolean detectCollision(Rect dangerHitBox);
 
 }

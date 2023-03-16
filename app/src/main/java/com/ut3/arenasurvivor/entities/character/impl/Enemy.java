@@ -9,14 +9,14 @@ import com.ut3.arenasurvivor.game.logic.main.GameView;
 
 public class Enemy extends Character {
 
-    private GameView gameView;
+    private final GameView gameView;
     /*---Fire rate Attr---*/
     //Base value of reload Time
-    private int RELOAD_TIME = 100;
+    private final int RELOAD_TIME = 100;
     //Attr to store current timer of reload
     private float reloadTimer;
     //Firerate of enemy
-    private float fireRate;
+    private final float FIRE_RATE = 0.02f;
 
     private long lastShotTime = -1;
     private int nbBullets;
@@ -27,7 +27,6 @@ public class Enemy extends Character {
         //Set firing attr
         this.reloadTimer = RELOAD_TIME;
         nbBullets = 5;
-        fireRate = 0.02f;
     }
 
     public void draw(Canvas canvas) {
@@ -39,7 +38,7 @@ public class Enemy extends Character {
         //Update the reloadTime
         Long now = System.nanoTime();
         int deltaTime = (int) ((now - lastShotTime) / 1000000);
-        reloadTimer -= fireRate * deltaTime;
+        reloadTimer -= FIRE_RATE * deltaTime;
         //If fire is ready and they're still bullets
         if (nbBullets > 0 && reloadTimer <= 0) {
             //Fire

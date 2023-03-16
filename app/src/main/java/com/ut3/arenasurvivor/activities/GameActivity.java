@@ -1,48 +1,28 @@
 package com.ut3.arenasurvivor.activities;
 
 
-import static androidx.constraintlayout.widget.StateSet.TAG;
-
 import android.Manifest;
-import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.PixelFormat;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.graphics.PixelFormat;
-
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
-import android.os.PowerManager;
-import android.provider.Settings;
 import android.util.Log;
-import android.view.MotionEvent;
-import android.view.View;
-import android.graphics.drawable.ColorDrawable;
-import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
-
-import com.ut3.arenasurvivor.R;
-import com.ut3.arenasurvivor.game.logic.main.GameView;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
-import com.ut3.arenasurvivor.Controller;
+import com.ut3.arenasurvivor.R;
+import com.ut3.arenasurvivor.game.logic.main.GameView;
 
 import java.io.File;
 import java.io.IOException;
@@ -52,16 +32,13 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
     private GameView gameView;
     SensorManager sm = null;
 
-    public static final int RECORD_AUDIO = 0;
-
-    File audiofile = null;
+    File audioFile = null;
 
     private MediaRecorder mRecorder = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
 
         initGameView();
 
@@ -74,9 +51,10 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
     private void setupActionBar(){
         ActionBar actionBar = getSupportActionBar();
 
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        actionBar.setCustomView(R.layout.activity_game_action_bar);
-
+        if(actionBar != null){
+            actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+            actionBar.setCustomView(R.layout.activity_game_action_bar);
+        }
     }
 
 
@@ -98,26 +76,22 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
 
         if (mRecorder == null) {
 
-
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
-
-
 
                 //Creating file
                 File dir = Environment.getExternalStorageDirectory();
                 try {
-                    audiofile = File.createTempFile("sound", ".3gp", dir);
+                    audioFile = File.createTempFile("sound", ".3gp", dir);
                 } catch (IOException e) {
-                    Log.e(TAG, e.getMessage());
+                    Log.e("ERROR", e.getMessage());
                     return;
                 }
 
-                Log.d(TAG, "onResume: persmission granted");
                 mRecorder = new MediaRecorder();
                 mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
                 mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
                 mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-                mRecorder.setOutputFile(audiofile.getAbsolutePath());
+                mRecorder.setOutputFile(audioFile.getAbsolutePath());
                 try {
                     mRecorder.prepare();
                 } catch (IOException e) {

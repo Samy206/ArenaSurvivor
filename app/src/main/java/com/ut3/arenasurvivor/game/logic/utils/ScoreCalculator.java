@@ -6,7 +6,7 @@ import com.ut3.arenasurvivor.activities.MainMenuActivity;
 
 public class ScoreCalculator {
 
-    private SharedPreferences sharedPreferences;
+    private final SharedPreferences sharedPreferences;
     private final double timeOffset = 2 * Math.pow(10,9);
 
     public ScoreCalculator(SharedPreferences sharedPreferences) {
