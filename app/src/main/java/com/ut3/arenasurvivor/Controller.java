@@ -11,15 +11,13 @@ public class Controller implements View.OnTouchListener {
     private float x1,x2;
     private final double MIN_DISTANCE = 150;
     private Long lastDashTimer;
-    private double dashDelay;
-    private int windowWidthDivider;
+    private final double dashDelay;
 
     // player movements application
-    private Player player;
+    private final Player player;
 
-    public Controller(Player player, int windowWidth) {
+    public Controller(Player player) {
         this.player = player;
-        this.windowWidthDivider = (int) (windowWidth / 2);
         lastDashTimer = 0L;
         dashDelay = 1.5 * Math.pow(10,9);
     }

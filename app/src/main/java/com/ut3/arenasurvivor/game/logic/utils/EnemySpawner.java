@@ -11,15 +11,15 @@ import com.ut3.arenasurvivor.game.logic.main.GameView;
 
 public class EnemySpawner {
 
-    private GameView gameView;
+    private final GameView gameView;
 
-    private Bitmap enemySprite;
+    private final Bitmap enemySprite;
 
     private int enemyWidth;
     private int enemyHeight;
     private int windowWidth;
     private int windowHeight;
-    private int  lowestSpawnHeight;
+    private int lowestSpawnHeight;
 
     private final int WAIT_TIME = 500;
     private int waitTimer;

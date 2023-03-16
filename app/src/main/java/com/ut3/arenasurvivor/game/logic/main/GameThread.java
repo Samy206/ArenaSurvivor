@@ -56,11 +56,11 @@ public class GameThread extends Thread {
             }
             long now = System.nanoTime();
             // Interval to redraw game
-            // (Change nanoseconds to milliseconds)
+            // Change nanoseconds to milliseconds
             long waitTime = (now - startTime) / 1000000;
             try {
                 if (waitTime < 30)
-                    this.sleep(30 - waitTime);
+                    sleep(30 - waitTime);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }

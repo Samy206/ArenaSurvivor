@@ -14,21 +14,21 @@ import java.util.logging.Logger;
 public class Projectile implements Collidable, Movable {
 
     public Rect hitBox;
-    private Logger LOGGER;
-    private String componentName;
+    private final Logger LOGGER;
+    private final String componentName;
 
-    private int SIZE = 10 ;
+    private final int SIZE = 10 ;
 
-    private int x;
+    private final int x;
 
-    private int y;
+    private final int y;
 
-    private int playerX;
+    private final int playerX;
 
-    private int playerY;
+    private final int playerY;
     private long lastDrawNanoTime = -1;
 
-    private double SPEED = 2.5;
+    private final double SPEED = 2.5;
 
     public Projectile(String name, int x, int y, int playerX, int playerY) {
         componentName = name;

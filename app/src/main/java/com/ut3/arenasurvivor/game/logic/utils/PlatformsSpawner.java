@@ -7,13 +7,13 @@ import com.ut3.arenasurvivor.entities.impl.Platform;
 
 public class PlatformsSpawner {
 
-    private int windowWidth;
+    private final int windowWidth;
 
     private final int PLATFORM_MAX_WIDTH  = 150;
     private final int PLATFORM_MIN_WIDTH = 70;
 
-    private double platformMaxHeight;
-    private double platformMinHeight;
+    private final double platformMaxHeight;
+    private final double platformMinHeight;
 
     private final int PLATFORM_HEIGHT = 30;
 

@@ -30,7 +30,7 @@ public class Platform implements Collidable {
 
     public void draw (Canvas canvas) {
         Paint paint = new Paint();
-        paint.setColor(Color.BLUE);
+        paint.setColor(Color.parseColor("#FF6200EE"));
         canvas.drawRect(hitBox, paint);
     }
 
