@@ -4,6 +4,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.RectF;
 
 import com.ut3.arenasurvivor.entities.Collidable;
 import com.ut3.arenasurvivor.entities.Movable;
@@ -71,7 +72,7 @@ public class Projectile implements Collidable, Movable {
     public void draw(Canvas canvas) {
         Paint paint = new Paint();
         paint.setColor(Color.RED);
-        canvas.drawRect(hitBox, paint);
+        canvas.drawOval(new RectF(hitBox), paint);
         this.lastDrawNanoTime = System.nanoTime();
     }
 }
