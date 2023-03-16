@@ -49,10 +49,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private EnemySpawner enemySpawner;
     private PlatformsSpawner platformsSpawner;
 
-
     //Constants
     private final double SCREAM_AMPLITUDE = 10000;
     private final int PROJECTILES_THRESHOLD = 50;
+    private Boolean cryUsed = false;
 
 
     public GameView(Context context, SharedPreferences sharedPreferences, GameActivity gameActivity) {
@@ -66,6 +66,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         startTime = System.nanoTime();
 
         this.sharedPreferences = sharedPreferences;
+
         this.gameActivity = gameActivity;
 
         thread = new GameThread(getHolder(), this, sharedPreferences);
@@ -107,9 +108,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             projectiles.poll();
         }
 
+     if(!cryUsed) {
         double amplitude = gameActivity.getAmplitude();
         if(amplitude > SCREAM_AMPLITUDE){
             this.clearGame();
+            this.cryUsed = true;
+        }
+        
         }
 
     }
